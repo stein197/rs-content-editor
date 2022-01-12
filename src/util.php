@@ -1,5 +1,5 @@
 <?php
-	namespace Editor;
+	namespace App;
 
 	use DI\Container;
 	use DI\ContainerBuilder;

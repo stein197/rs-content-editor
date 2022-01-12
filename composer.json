@@ -5,7 +5,7 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Editor\\": "src/"
+            "App\\": "src/"
         },
 		"files": [
 			"src/util.php"

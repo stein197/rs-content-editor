@@ -8,7 +8,7 @@
 		static $container;
 		if (!$container) {
 			$builder = new ContainerBuilder();
-			$builder->addDefinitions('definition.php');
+			$builder->addDefinitions(__DIR__.'/definition.php');
 			$container = $builder->build();
 		}
 		return $container;

@@ -16,20 +16,18 @@ function container(): Container {
 	return $container;
 }
 
-function handleRoute(string $requestMethod, string $requestUri, array $routeInfo): void {
+function handleRoute(string $requestMethod, string $requestUri, array $routeInfo): array {
 	switch ($routeInfo[0]) {
 		case Dispatcher::NOT_FOUND:
 		case Dispatcher::METHOD_NOT_ALLOWED:
-			echo 'Dispatcher error: NOT_FOUND or METHOD_NOT_ALLOWED';
-			break;
+			return 'Dispatcher error: NOT_FOUND or METHOD_NOT_ALLOWED';
 		case Dispatcher::FOUND:
 			$className = "App\\Controller\\{$routeInfo[1]}";
 			if (class_exists($className)) {
 				$controller = new $className($requestMethod, $requestUri, $routeInfo[2]);
-				$controller->{strtolower($requestMethod)}();
+				return $controller->{strtolower($requestMethod)}();
 			} else {
-				echo "Controller class \"{$className}\" does not exist";
+				return "Controller class \"{$className}\" does not exist";
 			}
-			break;
 	}
 }

@@ -13,5 +13,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 	$requestMethod = container()->get('request.method');
 	$requestUri = explode('?', container()->get('request.uri'))[0];
 	$routeInfo = $dispatcher->dispatch($requestMethod, $requestUri);
-	handleRoute($requestMethod, $requestUri, $routeInfo);
+	$result = handleRoute($requestMethod, $requestUri, $routeInfo);
+	header('Content-Type: application/json');
+	echo json_encode($result);
 })();

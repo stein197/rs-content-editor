@@ -1,4 +1,9 @@
 <?php
+
+use FastRoute\Dispatcher;
+
 return [
-	Klein\Klein::class => new Klein\Klein()
+	Dispatcher::class => FastRoute\simpleDispatcher(require __DIR__.DIRECTORY_SEPARATOR.'route.php'),
+	'request.method' => $_SERVER['REQUEST_METHOD'],
+	'request.uri' => $_SERVER['REQUEST_URI'],
 ];

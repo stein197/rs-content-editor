@@ -1,15 +1,17 @@
 <?php
 require __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
-use Klein\Klein;
+use FastRoute\Dispatcher;
 use function App\container;
+use function App\handleRoute;
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 
 (function (): void {
-	/** @var Klein */
-	$klein = container()->get(Klein::class);
-	$routeFunction = require __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'route.php';
-	$routeFunction($klein);
-	$klein->dispatch();
+	/** @var Dispatcher */
+	$dispatcher = container()->get(Dispatcher::class);
+	$requestMethod = container()->get('request.method');
+	$requestUri = explode('?', container()->get('request.uri'))[0];
+	$routeInfo = $dispatcher->dispatch($requestMethod, $requestUri);
+	handleRoute($requestMethod, $requestUri, $routeInfo);
 })();

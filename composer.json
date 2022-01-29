@@ -18,7 +18,7 @@
         }
     ],
     "require": {
-        "klein/klein": "^2.1",
-        "php-di/php-di": "^6.3"
+        "klein/klein": "2.1.2",
+        "php-di/php-di": "6.3.5"
     }
 }

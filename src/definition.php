@@ -1,4 +1,4 @@
 <?php
-	return [
-		Klein\Klein::class => new Klein\Klein()
-	];
+return [
+	Klein\Klein::class => new Klein\Klein()
+];

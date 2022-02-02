@@ -6,7 +6,7 @@ export default {
 		filename: "index.js",
 		path: __dirname
 	},
-	mode: "production",
+	mode: "development",
 	optimization: {
 		minimize: false
 	},

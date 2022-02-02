@@ -1,12 +1,12 @@
 import path from "path";
 
-export default {
+export default (env: {dev?: boolean}) => ({
 	entry: path.resolve(__dirname, "index.tsx"),
 	output: {
 		filename: "index.js",
 		path: __dirname
 	},
-	mode: "development",
+	mode: env.dev ? "development" : "production",
 	optimization: {
 		minimize: false
 	},
@@ -37,4 +37,4 @@ export default {
 			}
 		]
 	}
-};
+});

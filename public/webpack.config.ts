@@ -8,7 +8,7 @@ export default (env: {dev?: boolean}) => ({
 	},
 	mode: env.dev ? "development" : "production",
 	optimization: {
-		minimize: false
+		minimize: !env.dev
 	},
 	resolve: {
 		extensions: [

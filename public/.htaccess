@@ -1,4 +1,8 @@
-<IfModule mod_rewrite.c>
+<IfModule dir_module>
+	DirectoryIndex index.php index.html
+</IfModule>
+
+<IfModule rewrite_module>
 	<IfModule mod_negotiation.c>
 		Options -MultiViews -Indexes
 	</IfModule>

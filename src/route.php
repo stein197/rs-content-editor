@@ -3,7 +3,7 @@
 use App\Controller\Index;
 use FastRoute\RouteCollector;
 
-return function(RouteCollector $r) {
+return function (RouteCollector $r) {
 	$r->addGroup('/api', function (RouteCollector $r): void {
 		$r->get('/', Index::class);
 	});

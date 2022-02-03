@@ -10,7 +10,7 @@ function container(): Container {
 	static $container;
 	if (!$container) {
 		$builder = new ContainerBuilder();
-		$builder->addDefinitions(resolvePath('src/definition.php'));
+		$builder->addDefinitions(resolvePath('config/definition.php'));
 		$builder->useAutowiring(false);
 		$container = $builder->build();
 	}

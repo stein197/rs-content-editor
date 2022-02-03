@@ -2,9 +2,10 @@
 
 use FastRoute\Dispatcher;
 use function FastRoute\simpleDispatcher;
+use function App\resolvePath;
 
 return [
-	Dispatcher::class => simpleDispatcher(require __DIR__.DIRECTORY_SEPARATOR.'route.php'),
+	Dispatcher::class => simpleDispatcher(require resolvePath('src/route.php')),
 	'request.method' => $_SERVER['REQUEST_METHOD'],
 	'request.uri' => $_SERVER['REQUEST_URI'],
 ];

@@ -1,7 +1,8 @@
 <?php
 
-use App\Controller\Index;
 use FastRoute\RouteCollector;
+use App\Controller\Index;
+use function App\resolvePath;
 
 return function (RouteCollector $r) {
 	$r->addGroup('/api', function (RouteCollector $r): void {
@@ -9,6 +10,6 @@ return function (RouteCollector $r) {
 	});
 
 	$r->get('/', function (string $requestMethod, string $requestUri, array $requestVars): void {
-		require __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'index.html';
+		require resolvePath('public/index.html');
 	});
 };

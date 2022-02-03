@@ -9,7 +9,7 @@ return function (RouteCollector $r) {
 		$r->get('/', Index::class);
 	});
 
-	$r->get('/', function (string $requestMethod, string $requestUri, array $requestVars): void {
+	$r->get('/{path:.+}', function (string $requestMethod, string $requestUri, array $requestVars): void {
 		require resolvePath('public/index.html');
 	});
 };

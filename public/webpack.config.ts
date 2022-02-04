@@ -26,14 +26,17 @@ export default (env: {dev?: boolean}) => ({
 			{
 				test: /\.tsx?$/,
 				use: "ts-loader",
-				exclude: /node_modules/
-			},
-			{
-				// test: /\.(?:j|t)s(?:x)?$/,
-				test: /\.tsx?$/,
+				exclude: /node_modules/,
 				resolve: {
 					fullySpecified: false
 				}
+			},
+			{
+				test: /\.css$/,
+				use: [
+					"style-loader",
+					"css-loader"
+				]
 			}
 		]
 	}

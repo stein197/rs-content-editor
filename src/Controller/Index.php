@@ -5,9 +5,7 @@ use App\Controller;
 
 class Index extends Controller {
 
-	public function get(): array {
-		return [
-			'message' => 'Hello from Index::get, $vars: '.var_export($this->requestVars, true)
-		];
+	public function get(string $requestUri, array $requestVars): void {
+		echo 'Hello from Index::get, $vars: '.var_export($requestVars, true);
 	}
 }

@@ -1,11 +1,10 @@
 <?php
 
-use FastRoute\Dispatcher;
-use function FastRoute\simpleDispatcher;
+use App\RouteBuilder;
 use function App\resolvePath;
 
 return [
-	Dispatcher::class => simpleDispatcher(require resolvePath('config/route.php')),
+	RouteBuilder::class => new RouteBuilder(require resolvePath('config/route.php')),
 	'request.method' => $_SERVER['REQUEST_METHOD'],
 	'request.uri' => $_SERVER['REQUEST_URI'],
 ];

@@ -1,5 +1,7 @@
 <?php
 
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use App\Controller\Index;
 use App\Http\Middleware\OutputHtml;
 use App\Http\Middleware\OutputJson;
@@ -11,7 +13,10 @@ return function (RouteBuilder $r) {
 		$r->get('/', Index::class);
 	});
 
-	$r->before(OutputHtml::class)->get('{path:.+}', function (string $requestMethod, string $requestUri, array $requestVars): void {
+	$r->before(OutputHtml::class)->get('{path:.+}', function (RequestInterface $request, ResponseInterface $response): ResponseInterface {
+		ob_start();
 		require resolvePath('public/index.html');
+		$response->getBody()->write(ob_get_clean());
+		return $response;
 	});
 };

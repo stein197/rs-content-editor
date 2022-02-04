@@ -2,6 +2,19 @@
 
 namespace App;
 
+use BadMethodCallException;
+
+/**
+ * @method self get(string $route, string | callable $handler)
+ * @method self head(string $route, string | callable $handler)
+ * @method self post(string $route, string | callable $handler)
+ * @method self put(string $route, string | callable $handler)
+ * @method self delete(string $route, string | callable $handler)
+ * @method self connect(string $route, string | callable $handler)
+ * @method self options(string $route, string | callable $handler)
+ * @method self trace(string $route, string | callable $handler)
+ * @method self patch(string $route, string | callable $handler)
+ */
 final class RouteBuilder {
 
 	private array $routes = [];
@@ -12,52 +25,25 @@ final class RouteBuilder {
 		$callback($this);
 	}
 
+	public function __call(string $name, array $args): self {
+		$name = strtoupper($name);
+		if (!in_array($name, HTTP_METHODS))
+			throw new BadMethodCallException('Call to undefined method '.__CLASS__."::{$name}");
+		$this->match([$name], $args[0], $args[1]);
+		return $this;
+	}
+
 	public function before(string ...$middleware): self {
 		$this->middleware = $middleware;
 		return $this;
 	}
 
-	public function get(string $route, string | callable $handler): void {
-		$this->match(['GET'], $route, $handler);
-	}
-
-	public function head(string $route, string | callable $handler): void {
-		$this->match(['HEAD'], $route, $handler);
-	}
-
-	public function post(string $route, string | callable $handler): void {
-		$this->match(['POST'], $route, $handler);
-	}
-
-	public function put(string $route, string | callable $handler): void {
-		$this->match(['PUT'], $route, $handler);
-	}
-
-	public function delete(string $route, string | callable $handler): void {
-		$this->match(['DELETE'], $route, $handler);
-	}
-
-	public function connect(string $route, string | callable $handler): void {
-		$this->match(['CONNECT'], $route, $handler);
-	}
-
-	public function options(string $route, string | callable $handler): void {
-		$this->match(['OPTIONS'], $route, $handler);
-	}
-
-	public function trace(string $route, string | callable $handler): void {
-		$this->match(['TRACE'], $route, $handler);
-	}
-
-	public function patch(string $route, string | callable $handler): void {
-		$this->match(['PATCH'], $route, $handler);
-	}
-
-	public function any(string $route, string | callable $handler): void {
+	public function any(string $route, string | callable $handler): self {
 		$this->match(HTTP_METHODS, $route, $handler);
+		return $this;
 	}
 
-	public function match(array $methods, string $route, string | callable $handler): void {
+	public function match(array $methods, string $route, string | callable $handler): self {
 		$route = $this->groupPrefix.$route;
 		foreach ($methods as $method)
 			$this->routes[] = [
@@ -65,14 +51,16 @@ final class RouteBuilder {
 				'route' => $route,
 				'handler' => array_merge($this->middleware, [$handler])
 			];
-		$this->middleware = null;
+		$this->middleware = [];
+		return $this;
 	}
 
-	public function group(string $prefix, callable $callback): void {
+	public function group(string $prefix, callable $callback): self {
 		$prevPrefix = $this->groupPrefix;
 		$this->groupPrefix = $prevPrefix.$prefix;
 		$callback($this);
 		$this->groupPrefix = $prevPrefix;
+		return $this;
 	}
 
 	public function getRoutes(): array {

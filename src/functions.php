@@ -4,6 +4,7 @@ namespace App;
 
 use DI\Container;
 use DI\ContainerBuilder;
+use Psr\Http\Message\ResponseInterface;
 
 const HTTP_METHODS = [
 	'GET',
@@ -35,4 +36,11 @@ function container(): Container {
  */
 function resolvePath(string $path): string {
 	return __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.preg_replace('/[\\\\\/]+/', DIRECTORY_SEPARATOR, $path);
+}
+
+function sendResponse(ResponseInterface $request): void {
+	foreach ($request->getHeaders() as $name => $values)
+		foreach ($values as $value)
+			header(sprintf('%s: %s', $name, $value), false);
+	file_put_contents('php://output', $request->getBody());
 }

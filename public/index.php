@@ -1,22 +1,22 @@
 <?php
 require __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
+use DI\Container;
+use Psr\Http\Message\RequestInterface;
 use App\Router;
 use App\RouteHandler;
-use DI\Container;
 use function App\container;
+use function App\sendResponse;
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 
 (function (Container $container): void {
-	ob_start();
+	/** @var RequestInterface */
+	$request = $container->get(RequestInterface::class);
 	/** @var Router */
 	$router = $container->get(Router::class);
 	/** @var RouteHandler */
-	$handler = $router->dispatch($container->get('request.method'), explode('?', $container->get('request.uri'))[0]);
-	// /** @var Response */
-	$result = $handler->handle();
-	if ($result)
-		file_put_contents('php://output', json_encode($result));
-	file_put_contents('php://output', ob_get_clean());
+	$handler = $router->dispatch($request->getMethod(), explode('?', (string) $request->getUri())[0]);
+	$response = $handler->handle($request);
+	sendResponse($response);
 })(container());

@@ -2,32 +2,26 @@
 
 namespace App;
 
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * Route controller base class.
+ * @method ResponseInterface get(RequestInterface $request, ResponseInterface $response, array $requestVars)
+ * @method ResponseInterface head(RequestInterface $request, ResponseInterface $response, array $requestVars)
+ * @method ResponseInterface post(RequestInterface $request, ResponseInterface $response, array $requestVars)
+ * @method ResponseInterface put(RequestInterface $request, ResponseInterface $response, array $requestVars)
+ * @method ResponseInterface delete(RequestInterface $request, ResponseInterface $response, array $requestVars)
+ * @method ResponseInterface connect(RequestInterface $request, ResponseInterface $response, array $requestVars)
+ * @method ResponseInterface options(RequestInterface $request, ResponseInterface $response, array $requestVars)
+ * @method ResponseInterface trace(RequestInterface $request, ResponseInterface $response, array $requestVars)
+ * @method ResponseInterface patch(RequestInterface $request, ResponseInterface $response, array $requestVars)
  */
 abstract class Controller {
 
 	public function __construct() {}
 
-	public function handle(string $requestMethod, string $requestUri, array $requestVars): void {
-		$this->{strtolower($requestMethod)}($requestUri, $requestVars);
+	public function handle(RequestInterface $request, ResponseInterface $response, array $requestVars): ResponseInterface {
+		return $this->{strtolower($request->getMethod())}($request, $response, $requestVars);
 	}
-
-	public function get(string $requestUri, array $requestVars): void {}
-
-	public function head(string $requestUri, array $requestVars): void {}
-
-	public function post(string $requestUri, array $requestVars): void {}
-
-	public function put(string $requestUri, array $requestVars): void {}
-
-	public function delete(string $requestUri, array $requestVars): void {}
-
-	public function connect(string $requestUri, array $requestVars): void {}
-
-	public function options(string $requestUri, array $requestVars): void {}
-
-	public function trace(string $requestUri, array $requestVars): void {}
-
-	public function patch(string $requestUri, array $requestVars): void {}
 }

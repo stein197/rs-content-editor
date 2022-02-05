@@ -68,3 +68,7 @@ function sendResponse(ResponseInterface $response): void {
 function terminate(ResponseInterface $response): never {
 	throw new HttpException($response);
 }
+
+function template(string $name, ?array $vars = []): Template {
+	return new Template($name, $vars);
+}

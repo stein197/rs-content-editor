@@ -21,7 +21,7 @@ abstract class Controller {
 
 	public function __construct() {}
 
-	public function handle(RequestInterface $request, ResponseInterface $response, array $requestVars): ResponseInterface | string | array {
+	public function handle(RequestInterface $request, ResponseInterface $response, array $requestVars): Template | ResponseInterface | string | array {
 		return $this->{strtolower($request->getMethod())}($request, $response, $requestVars);
 	}
 }

@@ -38,6 +38,11 @@ final class RouteBuilder {
 		return $this;
 	}
 
+	public function after(string | callable ...$middleware): void {
+		foreach ($this->routes as &$route)
+			$route['handler'] = array_merge($route['handler'], $middleware);
+	}
+
 	public function any(string $route, string | callable $handler): self {
 		$this->match(HTTP_METHODS, $route, $handler);
 		return $this;

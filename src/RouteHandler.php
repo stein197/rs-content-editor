@@ -22,15 +22,17 @@ class RouteHandler {
 				$response = new Response();
 				foreach ($this->routeInfo[1] as $handler) {
 					if (is_callable($handler)) {
-						$response = $handler($request, $response, $this->routeInfo[2]);
+						$res = $handler($request, $response, $this->routeInfo[2]);
 					} elseif (is_string($handler)) {
 						if (class_exists($handler))
-							$response = (new $handler())->handle($request, $response, $this->routeInfo[2]);
+							$res = (new $handler())->handle($request, $response, $this->routeInfo[2]);
 						else
 							throw new Exception("Class \"{$handler}\" not found", 500);
 					} else {
 						throw new Exception("Unknown handler {$handler}");
 					}
+					if (!$res)
+						return $response;
 				}
 				return $response;
 		}

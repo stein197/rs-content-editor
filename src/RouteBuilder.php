@@ -33,7 +33,7 @@ final class RouteBuilder {
 		return $this;
 	}
 
-	public function before(string ...$middleware): self {
+	public function before(string | callable ...$middleware): self {
 		$this->middleware = array_merge($this->middleware, $middleware);
 		return $this;
 	}

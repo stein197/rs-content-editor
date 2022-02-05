@@ -7,6 +7,7 @@ export default (env: {dev?: boolean}) => ({
 		path: __dirname
 	},
 	mode: env.dev ? "development" : "production",
+	devtool: env.dev ? "source-map" : false,
 	optimization: {
 		minimize: !env.dev
 	},

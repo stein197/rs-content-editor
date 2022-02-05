@@ -3,8 +3,8 @@
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use App\Controller\Index;
-use App\Http\Middleware\OutputHtml;
-use App\Http\Middleware\OutputJson;
+use App\Middleware\OutputHtml;
+use App\Middleware\OutputJson;
 use App\RouteBuilder;
 use function App\resolvePath;
 

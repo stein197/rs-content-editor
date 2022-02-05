@@ -4,8 +4,8 @@
   "description": "ROCKSTONE content editor",
   "main": "index.js",
   "scripts": {
-    "webpack": "webpack",
-	"webpack:dev": "webpack --env dev"
+    "build": "webpack",
+	"build:dev": "webpack --env dev"
   },
   "author": "",
   "license": "ISC",

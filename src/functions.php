@@ -35,7 +35,7 @@ function container(): Container {
  * @return string Resolved path.
  */
 function resolvePath(string $path): string {
-	return __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.preg_replace('/[\\\\\/]+/', DIRECTORY_SEPARATOR, $path);
+	return realpath(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.preg_replace('/[\\\\\/]+/', DIRECTORY_SEPARATOR, $path));
 }
 
 function sendResponse(ResponseInterface $request): void {

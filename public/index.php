@@ -7,7 +7,7 @@ use App\Router;
 use function App\container;
 use function App\sendResponse;
 
-error_reporting(E_ALL ^ E_DEPRECATED);
+error_reporting(E_ALL ^ (E_DEPRECATED | E_WARNING));
 
 (function (Container $container): void {
 	/** @var RequestInterface */

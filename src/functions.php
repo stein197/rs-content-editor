@@ -45,7 +45,7 @@ function normalizePath(string $path): string {
 			continue;
 		} elseif ($part === '..') {
 			array_pop($result);
-		} elseif ($result) {
+		} elseif ($part) {
 			$result[] = $part;
 		}
 	}

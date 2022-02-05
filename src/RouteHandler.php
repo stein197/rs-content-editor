@@ -4,9 +4,9 @@ namespace App;
 
 use Exception;
 use FastRoute\Dispatcher;
-use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use App\Controller\HtmlStatic;
 
 class RouteHandler {
 
@@ -15,25 +15,28 @@ class RouteHandler {
 	public function handle(RequestInterface $request): ResponseInterface {
 		switch ($this->routeInfo[0]) {
 			case Dispatcher::NOT_FOUND:
-				return new Response(404);
+				return (new HtmlStatic())->handle($request, container()->make(ResponseInterface::class)->withStatus(404), $this->routeInfo[2] ?? []);
 			case Dispatcher::METHOD_NOT_ALLOWED:
-				return new Response(405);
+				return container()->make(ResponseInterface::class)->withStatus(404);
 			case Dispatcher::FOUND:
-				$response = new Response();
+				/** @var ResponseInterface */
+				$response = container()->make(ResponseInterface::class);
 				try {
 					foreach ($this->routeInfo[1] as $handler) {
 						if (is_callable($handler)) {
-							$response = $handler($request, $response, $this->routeInfo[2]);
+							$result = $handler($request, $response, $this->routeInfo[2]);
 						} elseif (is_string($handler)) {
 							if (class_exists($handler))
-								$response = (new $handler())->handle($request, $response, $this->routeInfo[2]);
+								$result = (new $handler())->handle($request, $response, $this->routeInfo[2] ?? []);
 							else
 								throw new Exception("Class \"{$handler}\" not found", 500);
 						} else {
 							throw new Exception("Unknown handler {$handler}");
 						}
-						if (!$response)
-							return container()->get(ResponseInterface::class);
+						if ($result instanceof ResponseInterface)
+							$response = $result;
+						else
+							$response->getBody()->write(is_array($result) ? json_encode($result) : $result);
 					}
 				} catch (HttpException $ex) {
 					$response = $ex->getResponse();

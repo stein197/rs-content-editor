@@ -14,7 +14,7 @@ error_reporting(E_ALL ^ (E_DEPRECATED | E_WARNING));
 	$request = $container->get(RequestInterface::class);
 	/** @var Router */
 	$router = $container->get(Router::class);
-	$handler = $router->dispatch($request->getMethod(), explode('?', (string) $request->getUri())[0]);
+	$handler = $router->dispatch($request->getMethod(), explode('?', $request->getUri())[0]);
 	$response = $handler->handle($request);
 	sendResponse($response);
 })(container());

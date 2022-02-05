@@ -1,21 +1,12 @@
 {
 	"compilerOptions": {
-		"jsx": "react",
-		"outDir": "out",
-		"target": "ESNext",
 		"strict": true,
-		"baseUrl": "src",
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"allowUnusedLabels": false,
-		"moduleResolution": "node",
-		"resolveJsonModule": true,
-		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": true,
-		"importsNotUsedAsValues": "remove",
-		"sourceMap": true
+		"allowUnusedLabels": false
 	},
 	"files": [
 		"index.ts"
-	]
+	],
+	"extends": "./tsconfig.default.json"
 }

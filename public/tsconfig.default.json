@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"jsx": "react",
+		"outDir": "out",
+		"target": "ESNext",
+		"baseUrl": "src",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"importsNotUsedAsValues": "remove",
+		"sourceMap": true
+	},
+	"files": [
+		"index.ts"
+	]
+}

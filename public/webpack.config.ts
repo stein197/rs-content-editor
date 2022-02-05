@@ -26,11 +26,18 @@ export default (env: {dev?: boolean}) => ({
 		rules: [
 			{
 				test: /\.tsx?$/,
-				use: "ts-loader",
+				use: [
+					{
+						loader: "ts-loader",
+						options: {
+							configFile: path.resolve(__dirname, env.dev ? "tsconfig.default.json" : "tsconfig.json")
+						}
+					}
+				],
 				exclude: /node_modules/,
 				resolve: {
 					fullySpecified: false
-				}
+				},
 			},
 			{
 				test: /\.css$/,

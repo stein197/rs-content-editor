@@ -3,7 +3,7 @@ require __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_
 
 use DI\Container;
 use Psr\Http\Message\RequestInterface;
-use App\Router;
+use App\Routing\Router;
 use function App\container;
 use function App\sendResponse;
 

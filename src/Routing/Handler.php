@@ -1,14 +1,16 @@
 <?php
 
-namespace App;
+namespace App\Routing;
 
 use Exception;
 use FastRoute\Dispatcher;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use App\Controller\HtmlStatic;
+use App\HttpException;
+use function App\container;
 
-class RouteHandler {
+class Handler {
 
 	public function __construct(private string $requestMethod, private string $requestUri, private $routeInfo) {}
 

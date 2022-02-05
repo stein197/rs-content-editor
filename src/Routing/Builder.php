@@ -1,8 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Routing;
 
 use BadMethodCallException;
+use const App\HTTP_METHODS;
 
 /**
  * @method self get(string $route, string | callable $handler)
@@ -15,7 +16,7 @@ use BadMethodCallException;
  * @method self trace(string $route, string | callable $handler)
  * @method self patch(string $route, string | callable $handler)
  */
-final class RouteBuilder {
+final class Builder {
 
 	private array $routes = [];
 	private array $middleware = [];

@@ -35,7 +35,21 @@ function container(): Container {
  * @return string Resolved path.
  */
 function resolvePath(string $path): string {
-	return realpath(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.preg_replace('/[\\\\\/]+/', DIRECTORY_SEPARATOR, $path));
+	return normalizePath(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.preg_replace('/[\\\\\/]+/', DIRECTORY_SEPARATOR, $path));
+}
+
+function normalizePath(string $path): string {
+	$result = [];
+	foreach (preg_split('/[\\\\\/]+/', $path) as $part) {
+		if ($part === '.') {
+			continue;
+		} elseif ($part === '..') {
+			array_pop($result);
+		} else {
+			$result[] = $part;
+		}
+	}
+	return join(DIRECTORY_SEPARATOR, $result);
 }
 
 function sendResponse(ResponseInterface $request): void {
@@ -43,4 +57,13 @@ function sendResponse(ResponseInterface $request): void {
 		foreach ($values as $value)
 			header(sprintf('%s: %s', $name, $value), false);
 	file_put_contents('php://output', $request->getBody());
+}
+
+/**
+ * Прекращает цепочку работы контроллеров.
+ * @param ResponseInterface $response Ответ, немедленно отправляемый на клиент.
+ * @throws HttpException
+ */
+function terminate(ResponseInterface $response): never {
+	throw new HttpException($response);
 }

@@ -18,7 +18,7 @@ use BadMethodCallException;
 final class RouteBuilder {
 
 	private array $routes = [];
-	private array | null $middleware = null;
+	private array $middleware = [];
 	private string $groupPrefix = '';
 
 	public function __construct(callable $callback) {
@@ -34,7 +34,7 @@ final class RouteBuilder {
 	}
 
 	public function before(string ...$middleware): self {
-		$this->middleware = $middleware;
+		$this->middleware = array_merge($this->middleware, $middleware);
 		return $this;
 	}
 

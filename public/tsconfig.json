@@ -5,8 +5,5 @@
 		"noUnusedParameters": true,
 		"allowUnusedLabels": false
 	},
-	"files": [
-		"index.ts"
-	],
 	"extends": "./tsconfig.default.json"
 }

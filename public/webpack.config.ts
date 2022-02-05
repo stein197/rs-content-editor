@@ -1,7 +1,7 @@
 import path from "path";
 
 export default (env: {dev?: boolean}) => ({
-	entry: path.resolve(__dirname, "index.tsx"),
+	entry: path.resolve(__dirname, "index.ts"),
 	output: {
 		filename: "index.js",
 		path: __dirname

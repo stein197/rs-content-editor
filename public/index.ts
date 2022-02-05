@@ -4,5 +4,5 @@ import App from "App";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 document.addEventListener("DOMContentLoaded", () => {
-	ReactDOM.render(<App/>, document.body.querySelector("main"));
+	ReactDOM.render(React.createElement(App), document.body.querySelector("main"));
 });

@@ -52,11 +52,12 @@ function normalizePath(string $path): string {
 	return join(DIRECTORY_SEPARATOR, $result);
 }
 
-function sendResponse(ResponseInterface $request): void {
-	foreach ($request->getHeaders() as $name => $values)
+function sendResponse(ResponseInterface $response): void {
+	foreach ($response->getHeaders() as $name => $values)
 		foreach ($values as $value)
 			header(sprintf('%s: %s', $name, $value), false);
-	file_put_contents('php://output', $request->getBody());
+	http_response_code($response->getStatusCode());
+	file_put_contents('php://output', $response->getBody());
 }
 
 /**

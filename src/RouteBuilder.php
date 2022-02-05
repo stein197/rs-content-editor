@@ -41,6 +41,7 @@ final class RouteBuilder {
 	public function after(string | callable ...$middleware): void {
 		foreach ($this->routes as &$route)
 			$route['handler'] = array_merge($route['handler'], $middleware);
+		$this->middleware = $this->middleware ? [] : $this->middleware;
 	}
 
 	public function any(string $route, string | callable $handler): self {

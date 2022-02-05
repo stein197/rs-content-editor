@@ -12,6 +12,10 @@ use function App\resolvePath;
 
 class LoadDotEnv extends Controller {
 
+	private const REQUIRED_VARS = [
+		'DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'
+	];
+
 	public function handle(RequestInterface $request, ResponseInterface $response, array $requestVars): ResponseInterface {
 		$envFilePath = resolvePath('.env');
 		if (!file_exists($envFilePath))
@@ -19,12 +23,12 @@ class LoadDotEnv extends Controller {
 		$dotEnv = Dotenv::createImmutable(resolvePath('.'));
 		$dotEnv->load();
 		try {
-			$dotEnv->required(['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME']);
+			$dotEnv->required(self::REQUIRED_VARS);
 			return $response;
 		} catch (ValidationException $ex) {
 			$response->getBody()->write(json_encode([
 				'error' => [
-					'msg' => $ex->getMessage()
+					'msg' => 'Не установлена одна из переменных в .env-файле: '.join(', ', self::REQUIRED_VARS)
 				]
 			]));
 			terminate($response->withStatus(500));

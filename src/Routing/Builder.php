@@ -17,6 +17,10 @@ use const App\HTTP_METHODS;
  */
 final class Builder {
 
+	private const MIDDLEWARE_BEFORE = 'before';
+	private const MIDDLEWARE_AFTER = 'after';
+	private const MIDDLEWARE_WITHOUT = 'without';
+
 	private array $middleware = [];
 	private array $config = [];
 	private array $curEntry;
@@ -34,23 +38,23 @@ final class Builder {
 	}
 
 	public function before(string | callable ...$middleware): self {
-		$this->middleware['after'] = $this->middleware['without'] = null;
-		return $this->addMiddleware('before', ...$middleware);
+		$this->middleware[self::MIDDLEWARE_AFTER] = $this->middleware[self::MIDDLEWARE_WITHOUT] = null;
+		return $this->addMiddleware(self::MIDDLEWARE_BEFORE, ...$middleware);
 	}
 
 	public function after(string | callable ...$middleware): self {
-		$this->middleware['before'] = null;
-		$this->addMiddleware('after', ...$middleware);
-		$this->curEntry['after'] = $this->middleware['after'];
-		$this->middleware['after'] = [];
+		$this->middleware[self::MIDDLEWARE_BEFORE] = null;
+		$this->addMiddleware(self::MIDDLEWARE_AFTER, ...$middleware);
+		$this->curEntry[self::MIDDLEWARE_AFTER] = $this->middleware[self::MIDDLEWARE_AFTER];
+		$this->middleware[self::MIDDLEWARE_AFTER] = [];
 		return $this;
 	}
 
 	public function without(string | callable ...$middleware): self {
-		$this->middleware['before'] = null;
-		$this->addMiddleware('without', ...$middleware);
-		$this->curEntry['without'] = $this->middleware['without'];
-		$this->middleware['without'] = [];
+		$this->middleware[self::MIDDLEWARE_BEFORE] = null;
+		$this->addMiddleware(self::MIDDLEWARE_WITHOUT, ...$middleware);
+		$this->curEntry[self::MIDDLEWARE_WITHOUT] = $this->middleware[self::MIDDLEWARE_WITHOUT];
+		$this->middleware[self::MIDDLEWARE_WITHOUT] = [];
 		return $this;
 	}
 
@@ -72,7 +76,7 @@ final class Builder {
 				'handler' => $handler
 			];
 			$this->curEntry = &$this->config[sizeof($this->config) - 1];
-			$this->assignMiddleware('before', $this->curEntry);
+			$this->assignMiddleware(self::MIDDLEWARE_BEFORE, $this->curEntry);
 			$this->middleware = [];
 		}
 		return $this;
@@ -83,7 +87,7 @@ final class Builder {
 			'prefix' => $prefix
 		];
 		$this->curEntry = &$this->config[sizeof($this->config) - 1];
-		$this->assignMiddleware('before', $this->curEntry);
+		$this->assignMiddleware(self::MIDDLEWARE_BEFORE, $this->curEntry);
 		$this->middleware = [];
 		$this->curEntry['group'] = (new self($callback))->config;
 		return $this;
@@ -106,9 +110,9 @@ final class Builder {
 
 	private static function flatConfig($array, &$result, $prefix = '', $before = [], $after = [], $without = []) {
 		foreach ($array as $item) {
-			$curBefore = array_merge($before, @$item['before'] ?? []);
-			$curAfter = array_merge(@$item['after'] ?? [], $after);
-			$curWithout = array_merge($without, @$item['without'] ?? []);
+			$curBefore = array_merge($before, @$item[self::MIDDLEWARE_BEFORE] ?? []);
+			$curAfter = array_merge(@$item[self::MIDDLEWARE_AFTER] ?? [], $after);
+			$curWithout = array_merge($without, @$item[self::MIDDLEWARE_WITHOUT] ?? []);
 			if (@$item['group'] != null)
 				self::flatConfig($item['group'], $result, $prefix.$item['prefix'], $curBefore, $curAfter, $curWithout);
 			else

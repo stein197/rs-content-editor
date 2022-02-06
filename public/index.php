@@ -5,7 +5,7 @@ use DI\Container;
 use Psr\Http\Message\RequestInterface;
 use App\Routing\Router;
 use function App\container;
-use function App\sendResponse;
+use function App\send;
 
 error_reporting(E_ALL ^ (E_DEPRECATED | E_WARNING));
 
@@ -16,5 +16,5 @@ error_reporting(E_ALL ^ (E_DEPRECATED | E_WARNING));
 	$router = $container->get(Router::class);
 	$handler = $router->dispatch($request->getMethod(), explode('?', $request->getUri())[0]);
 	$response = $handler->handle($request);
-	sendResponse($response);
+	send($response);
 })(container());

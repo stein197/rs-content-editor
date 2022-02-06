@@ -52,7 +52,12 @@ function normalizePath(string $path): string {
 	return join(DIRECTORY_SEPARATOR, $result);
 }
 
-function sendResponse(ResponseInterface $response): void {
+/**
+ * Отправляет результат вместе в телом, заголовками и кодом ответа на клиент.
+ * @param ResponseInterface $response Ответ, отправляемый на клиент.
+ * @return void 
+ */
+function send(ResponseInterface $response): void {
 	foreach ($response->getHeaders() as $name => $values)
 		foreach ($values as $value)
 			header(sprintf('%s: %s', $name, $value), false);

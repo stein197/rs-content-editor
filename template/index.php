@@ -1,3 +1,3 @@
-<? $this->include('include.begin') ?>
+<?= $this->include('include.begin') ?>
 <main></main>
-<? $this->include('include.end') ?>
+<?= $this->include('include.end') ?>

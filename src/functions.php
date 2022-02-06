@@ -67,13 +67,19 @@ function send(ResponseInterface $response): void {
 
 /**
  * Прекращает цепочку работы контроллеров.
- * @param ResponseInterface $response Ответ, немедленно отправляемый на клиент.
+ * @param ResponseInterface|Template|string|array $response Ответ, немедленно отправляемый на клиент.
  * @throws HttpException
  */
-function terminate(ResponseInterface $response): never {
+function terminate(ResponseInterface | Template | string | array $response): never {
 	throw new HttpException($response);
 }
 
+/**
+ * Возвращает шаблон.
+ * @param string $name Имя шаблона.
+ * @param null|array $vars Переменные, передаваемые внутрь.
+ * @return Template Шаблон.
+ */
 function template(string $name, ?array $vars = []): Template {
 	return new Template($name, $vars);
 }

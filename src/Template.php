@@ -19,6 +19,7 @@ final class Template {
 		return join('', $this->parts);
 	}
 
+	// TODO: Return string instead of rendering into internal array
 	protected function include(string $name, ?array $vars = []) {
 		$this->parts[] = ob_get_clean();
 		$this->parts[] = (new self($name, array_merge((array) $this->vars, $vars)))->render();

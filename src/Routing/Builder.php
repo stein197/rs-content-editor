@@ -51,7 +51,7 @@ final class Builder {
 	}
 
 	public function match(array $methods, string $route, string | callable $handler): self {
-		$route = $this->groupPrefix.$route;
+		$route = preg_replace('/\/{2,}/', '/', $this->groupPrefix.$route);
 		foreach ($methods as $method)
 			$this->routes[] = [
 				'method' => $method,

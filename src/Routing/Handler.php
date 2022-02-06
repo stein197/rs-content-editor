@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use App\Controller\HtmlStatic;
 use App\HttpException;
 use App\Template;
+use RuntimeException;
 
 use function App\container;
 
@@ -23,7 +24,7 @@ class Handler {
 				$result = (new HtmlStatic())->handle($request, $response, $this->routeInfo[2] ?? []);
 				return $this->createResponse($result, $response);
 			case Dispatcher::METHOD_NOT_ALLOWED:
-				return container()->make(ResponseInterface::class)->withStatus(404);
+				return container()->make(ResponseInterface::class)->withStatus(405);
 			case Dispatcher::FOUND:
 				/** @var ResponseInterface */
 				$response = container()->make(ResponseInterface::class);
@@ -33,7 +34,7 @@ class Handler {
 						$response = $this->createResponse($result, $response);
 					}
 				} catch (HttpException $ex) {
-					$response = $ex->getResponse();
+					$response = $this->createResponse($ex->getResponse(), $response);
 				}
 				return $response;
 		}

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Routing;
 
 use BadMethodCallException;
@@ -18,9 +17,9 @@ use const App\HTTP_METHODS;
  */
 final class Builder {
 
-	private array $routes = [];
 	private array $middleware = [];
-	private string $groupPrefix = '';
+	private array $config = [];
+	private array $curEntry;
 
 	public function __construct(callable $callback) {
 		$callback($this);
@@ -35,14 +34,29 @@ final class Builder {
 	}
 
 	public function before(string | callable ...$middleware): self {
-		$this->middleware = array_merge($this->middleware, $middleware);
+		$this->middleware['after'] = $this->middleware['without'] = null;
+		return $this->addMiddleware('before', ...$middleware);
+	}
+
+	public function after(string | callable ...$middleware): self {
+		$this->middleware['before'] = null;
+		$this->addMiddleware('after', ...$middleware);
+		$this->curEntry['after'] = $this->middleware['after'];
+		$this->middleware['after'] = [];
 		return $this;
 	}
 
-	public function after(string | callable ...$middleware): void {
-		foreach ($this->routes as &$route)
-			$route['handler'] = array_merge($route['handler'], $middleware);
-		$this->middleware = $this->middleware ? [] : $this->middleware;
+	public function without(string | callable ...$middleware): self {
+		$this->middleware['before'] = null;
+		$this->addMiddleware('without', ...$middleware);
+		$this->curEntry['without'] = $this->middleware['without'];
+		$this->middleware['without'] = [];
+		return $this;
+	}
+
+	private function addMiddleware(string $key, string | callable ...$middleware): self {
+		$this->middleware[$key] = @$this->middleware[$key] ? array_merge($this->middleware[$key], $middleware) : $middleware;
+		return $this;
 	}
 
 	public function any(string $route, string | callable $handler): self {
@@ -51,26 +65,54 @@ final class Builder {
 	}
 
 	public function match(array $methods, string $route, string | callable $handler): self {
-		$route = preg_replace('/\/{2,}/', '/', $this->groupPrefix.$route);
-		foreach ($methods as $method)
-			$this->routes[] = [
+		foreach ($methods as $method) {
+			$this->config[] = [
 				'method' => $method,
 				'route' => $route,
-				'handler' => array_merge($this->middleware, [$handler])
+				'handler' => $handler
 			];
-		$this->middleware = [];
+			$this->curEntry = &$this->config[sizeof($this->config) - 1];
+			$this->assignMiddleware('before', $this->curEntry);
+			$this->middleware = [];
+		}
 		return $this;
 	}
 
 	public function group(string $prefix, callable $callback): self {
-		$prevPrefix = $this->groupPrefix;
-		$this->groupPrefix = $prevPrefix.$prefix;
-		$callback($this);
-		$this->groupPrefix = $prevPrefix;
+		$this->config[] = [
+			'prefix' => $prefix
+		];
+		$this->curEntry = &$this->config[sizeof($this->config) - 1];
+		$this->assignMiddleware('before', $this->curEntry);
+		$this->middleware = [];
+		$this->curEntry['group'] = (new self($callback))->config;
 		return $this;
 	}
 
+	/**
+	 * Возвращает линейный список маршрутов.
+	 * @return RouteInfo[]
+	 */
 	public function getRoutes(): array {
-		return $this->routes;
+		$result = [];
+		self::flatConfig($this->config, $result);
+		return $result;
+	}
+
+	private function assignMiddleware(string $key, array &$array): void {
+		$array[$key] = @$this->middleware[$key] ?? [];
+		$this->middleware[$key] = [];
+	}
+
+	private static function flatConfig($array, &$result, $prefix = '', $before = [], $after = [], $without = []) {
+		foreach ($array as $item) {
+			$curBefore = array_merge($before, @$item['before'] ?? []);
+			$curAfter = array_merge(@$item['after'] ?? [], $after);
+			$curWithout = array_merge($without, @$item['without'] ?? []);
+			if (@$item['group'] != null)
+				self::flatConfig($item['group'], $result, $prefix.$item['prefix'], $curBefore, $curAfter, $curWithout);
+			else
+				$result[] = new RouteInfo(strtoupper($item['method']), preg_replace('/\/+/', '/', $prefix.$item['route']), array_values(array_diff(array_merge($curBefore, [$item['handler']], $curAfter), $curWithout)));
+		}
 	}
 }

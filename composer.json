@@ -2,6 +2,12 @@
     "name": "rs/content-editor",
 	"version": "1.0.0",
     "description": "JSON content editor for ROCKSTONE",
+	"scripts": {
+		"server": "php -S localhost:80 -t public"
+	},
+	"scripts-descriptions": {
+		"server": "Runs PHP development HTTP server on 80 port. PHP should be available through the PATH variable as well as 80 port"
+	},
     "type": "project",
     "autoload": {
         "psr-4": {

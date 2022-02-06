@@ -35,7 +35,7 @@ function container(): Container {
  * @return string Resolved path.
  */
 function resolvePath(string $path): string {
-	return normalizePath(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.preg_replace('/[\\\\\/]+/', DIRECTORY_SEPARATOR, $path));
+	return DIRECTORY_SEPARATOR === '/' && $path[0] === '/' || DIRECTORY_SEPARATOR === '\\' && preg_match('/^[a-z]:[\\\\\/]/i', $path) ? $path : normalizePath(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.preg_replace('/[\\\\\/]+/', DIRECTORY_SEPARATOR, $path));
 }
 
 function normalizePath(string $path): string {

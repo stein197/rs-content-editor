@@ -41,13 +41,6 @@ export default (env: {dev?: boolean}) => ({
 				resolve: {
 					fullySpecified: false
 				},
-			},
-			{
-				test: /\.css$/,
-				use: [
-					"style-loader",
-					"css-loader"
-				]
 			}
 		]
 	}

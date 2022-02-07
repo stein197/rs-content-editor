@@ -16,9 +16,9 @@ export default (env: {dev?: boolean}) => ({
 	},
 	resolve: {
 		extensions: [
-			".js",
 			".ts",
-			".tsx"
+			".tsx",
+			".js"
 		],
 		modules: [
 			path.resolve(__dirname, "node_modules"),

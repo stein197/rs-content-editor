@@ -1,5 +1,13 @@
 # ROCKSTONE Content Editor
 
+## Структура директорий проекта
+- `.vscode` Настройки проекта для Visual Studio Code
+- `assets` TypeScript, SASS и LESS файлы
+- `config` Конфигурационные php-скрипты
+- `public` Корневая папка, которую видит пользователь, т.е. DocumentRoot
+- `src` Исходный бэкэнд-части проекта
+- `template` Пользовательские шаблоны для серверного рендеринга
+
 ## Composer скрипты
 - `server` Запускает встроенный в PHP HTTP сервер по порту 80
 

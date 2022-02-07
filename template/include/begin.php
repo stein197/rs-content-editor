@@ -8,11 +8,5 @@
 		<? if ($this->vars->spa): ?>
 			<script src="/index.js" defer="true"></script>
 		<? endif ?>
-		<style>
-			html,
-			body {
-				min-height: 100vh;
-			}
-		</style>
 	</head>
 	<body>

@@ -4,11 +4,14 @@
   "description": "ROCKSTONE content editor",
   "main": "index.js",
   "scripts": {
-	"sass": "sass --load-path=node_modules assets/index.scss public/index.css --style=compressed --embed-sources",
-	"webpack": "webpack",
-	"webpack:dev": "webpack --env dev",
-	"build": "npm run sass && npm run webpack",
-	"build:dev": "npm run sass && npm run webpack:dev"
+    "clean": "run-script-os",
+    "clean:windows": "del public\\*.css && del public\\*.js && del public\\*.map",
+    "clean:nix": "rm public/*.css && rm public/*.js && rm public/*.map",
+    "sass": "sass --load-path=node_modules assets/index.scss public/index.css --style=compressed --embed-sources",
+    "webpack": "webpack",
+    "webpack:dev": "webpack --env dev",
+    "build": "npm run sass && npm run webpack",
+    "build:dev": "npm run sass && npm run webpack:dev"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +19,7 @@
     "@types/node": "17.0.14",
     "@types/react": "17.0.38",
     "@types/react-dom": "17.0.11",
+    "run-script-os": "1.1.6",
     "sass": "1.49.7",
     "ts-loader": "9.2.6",
     "ts-node": "10.4.0",

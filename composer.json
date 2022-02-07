@@ -8,6 +8,9 @@
 	"scripts-descriptions": {
 		"server": "Runs PHP development HTTP server on 80 port. PHP should be available through the PATH variable as well as 80 port"
 	},
+	"config": {
+		"process-timeout": 0
+	},
     "type": "project",
     "autoload": {
         "psr-4": {

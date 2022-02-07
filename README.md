@@ -3,6 +3,7 @@
 ## Структура директорий проекта
 - `.vscode` Настройки проекта для Visual Studio Code
 - `assets` TypeScript, SASS и LESS файлы
+	- `src` Исходный код TypeScript
 - `config` Конфигурационные php-скрипты
 - `public` Корневая папка, которую видит пользователь, т.е. DocumentRoot
 - `src` Исходный код бэкэнд-части проекта

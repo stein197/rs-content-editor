@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "clean": "run-script-os",
-    "clean:windows": "del public\\*.css && del public\\*.js && del public\\*.map",
-    "clean:nix": "rm public/*.css && rm public/*.js && rm public/*.map",
+    "clean:windows": "del public\\*.css 2>nul && del public\\*.js 2>nul && del public\\*.map 2>nul",
+    "clean:nix": "rm public/*.css 2>/dev/null && rm public/*.js 2>/dev/null && rm public/*.map 2>/dev/null",
     "sass": "sass --load-path=node_modules assets/index.scss public/index.css --style=compressed --embed-sources",
     "webpack": "webpack",
     "webpack:dev": "webpack --env dev",

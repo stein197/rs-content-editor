@@ -39,27 +39,27 @@ final class Builder {
 
 	public function before(string | callable ...$middleware): self {
 		$this->middleware[self::MIDDLEWARE_AFTER] = $this->middleware[self::MIDDLEWARE_WITHOUT] = null;
-		return $this->addMiddleware(self::MIDDLEWARE_BEFORE, ...$middleware);
+		return $this->addMiddleware(self::MIDDLEWARE_BEFORE, false, ...$middleware);
 	}
 
 	public function after(string | callable ...$middleware): self {
 		$this->middleware[self::MIDDLEWARE_BEFORE] = null;
-		$this->addMiddleware(self::MIDDLEWARE_AFTER, ...$middleware);
-		$this->curEntry[self::MIDDLEWARE_AFTER] = $this->middleware[self::MIDDLEWARE_AFTER];
-		$this->middleware[self::MIDDLEWARE_AFTER] = [];
+		$this->addMiddleware(self::MIDDLEWARE_AFTER, true, ...$middleware);
 		return $this;
 	}
 
 	public function without(string | callable ...$middleware): self {
 		$this->middleware[self::MIDDLEWARE_BEFORE] = null;
-		$this->addMiddleware(self::MIDDLEWARE_WITHOUT, ...$middleware);
-		$this->curEntry[self::MIDDLEWARE_WITHOUT] = $this->middleware[self::MIDDLEWARE_WITHOUT];
-		$this->middleware[self::MIDDLEWARE_WITHOUT] = [];
+		$this->addMiddleware(self::MIDDLEWARE_WITHOUT, true, ...$middleware);
 		return $this;
 	}
 
-	private function addMiddleware(string $key, string | callable ...$middleware): self {
+	private function addMiddleware(string $key, bool $assign, string | callable ...$middleware): self {
 		$this->middleware[$key] = @$this->middleware[$key] ? array_merge($this->middleware[$key], $middleware) : $middleware;
+		if ($assign) {
+			$this->curEntry[$key] = $this->middleware[$key];
+			$this->middleware[$key] = [];
+		}
 		return $this;
 	}
 

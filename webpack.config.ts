@@ -1,10 +1,13 @@
 import path from "path";
 
+const DIR_ASSETS: string = path.resolve(__dirname, "assets");
+const DIR_PUBLIC: string = path.resolve(__dirname, "public");
+
 export default (env: {dev?: boolean}) => ({
-	entry: path.resolve(__dirname, "index.ts"),
+	entry: path.resolve(DIR_ASSETS, "index.ts"),
 	output: {
 		filename: "index.js",
-		path: __dirname
+		path: DIR_PUBLIC
 	},
 	mode: env.dev ? "development" : "production",
 	devtool: env.dev ? "source-map" : false,
@@ -19,7 +22,7 @@ export default (env: {dev?: boolean}) => ({
 		],
 		modules: [
 			path.resolve(__dirname, "node_modules"),
-			path.resolve(__dirname, "src")
+			path.resolve(DIR_ASSETS, "src")
 		]
 	},
 	module: {

@@ -1,7 +1,6 @@
 vendor/
-composer.lock
-package-lock.json
 node_modules/
-out/
-.env
+composer.lock
+*.LICENSE.txt
 *.map
+*.js

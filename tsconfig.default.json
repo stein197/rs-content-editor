@@ -1,9 +1,8 @@
 {
 	"compilerOptions": {
 		"jsx": "react",
-		"outDir": "out",
 		"target": "ESNext",
-		"baseUrl": "src",
+		"baseUrl": "assets/src",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
@@ -12,6 +11,6 @@
 		"sourceMap": true
 	},
 	"files": [
-		"index.ts"
+		"assets/index.ts"
 	]
 }

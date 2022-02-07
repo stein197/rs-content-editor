@@ -6,7 +6,7 @@
 		},
 		{
 			"name": "Client",
-			"path": "public"
+			"path": "assets"
 		}
 	]
 }

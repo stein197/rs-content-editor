@@ -30,4 +30,10 @@ class Request {
 	public function vars(): array {
 		return $this->vars;
 	}
+
+	// TODO
+	public static function fromGlobals(): self {}
+
+	// TODO
+	public static function fromCLI(): self {}
 }

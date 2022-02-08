@@ -3,7 +3,7 @@ namespace App\Http;
 
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ResponseInterface;
-use App\HttpException;
+use App\Http\TerminateException;
 use App\View;
 
 class Response {
@@ -30,7 +30,7 @@ class Response {
 	}
 
 	public function terminate(): never {
-		throw new HttpException($this);
+		throw new TerminateException($this);
 	}
 
 	// TODO

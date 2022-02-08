@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use App\Controller\HtmlStatic;
 use App\Http\Request;
 use App\Http\Response;
-use App\HttpException;
+use App\Http\TerminateException;
 use App\View;
 
 use function App\container;
@@ -31,7 +31,7 @@ class Handler {
 				try {
 					foreach ($this->routeInfo[1] as $handler)
 						$res = $this->getResult($handler, $req, $res);
-				} catch (HttpException $ex) {
+				} catch (TerminateException $ex) {
 					$res = $ex->getResponse();
 				}
 				return $res->response();

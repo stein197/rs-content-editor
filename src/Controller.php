@@ -4,7 +4,7 @@ namespace App;
 
 use App\Http\Request;
 use App\Http\Response;
-use App\HttpException;
+use App\Http\TerminateException;
 
 /**
  * Route controller base class.
@@ -27,7 +27,7 @@ abstract class Controller {
 	 * @param Request $request
 	 * @param Response $response
 	 * @return Response
-	 * @throws HttpException Если был вызов метода `terminate()`
+	 * @throws TerminateException Если был вызов метода `terminate()`
 	 */
 	public function handle(Request $request, Response $response): Response {
 		return $this->{strtolower($request->request->getMethod())}($request, $response);

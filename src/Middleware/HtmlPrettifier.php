@@ -3,16 +3,16 @@
 namespace App\Middleware;
 
 use Tidy;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Psr7\Utils;
+use App\Http\Request;
+use App\Http\Response;
 use App\Controller;
 
 class HtmlPrettifier extends Controller {
 
-	public function handle(RequestInterface $request, ResponseInterface $response, array $requestVars): ResponseInterface {
+	public function handle(Request $request, Response $response): Response {
 		$tidy = new Tidy;
-		$tidy->parseString($response->getBody(), [
+		$tidy->parseString($response->response()->getBody(), [
 			'indent' => true,
 			'indent-spaces' => 4,
 			'indent-with-tabs' => true,
@@ -22,6 +22,6 @@ class HtmlPrettifier extends Controller {
 			'wrap' => 0
 		], 'utf8');
 		$tidy->cleanRepair();
-		return $response->withBody(Utils::streamFor((string) $tidy));
+		return $response->body((string) $tidy);
 	}
 }

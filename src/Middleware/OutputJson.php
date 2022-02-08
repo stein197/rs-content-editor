@@ -2,13 +2,13 @@
 
 namespace App\Middleware;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use App\Http\Request;
+use App\Http\Response;
 use App\Controller;
 
 class OutputJson extends Controller {
 
-	public function handle(RequestInterface $request, ResponseInterface $response, array $requestVars): ResponseInterface {
-		return $response->withHeader('Content-Type', 'application/json');
+	public function handle(Request $request, Response $response): Response {
+		return $response->header('Content-Type', 'application/json');
 	}
 }

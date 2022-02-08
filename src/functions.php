@@ -64,22 +64,3 @@ function send(ResponseInterface $response): void {
 	http_response_code($response->getStatusCode());
 	file_put_contents('php://output', $response->getBody());
 }
-
-/**
- * Прекращает цепочку работы контроллеров.
- * @param ResponseInterface|View|string|array $response Ответ, немедленно отправляемый на клиент.
- * @throws HttpException
- */
-function terminate(ResponseInterface | View | string | array $response): never {
-	throw new HttpException($response);
-}
-
-/**
- * Возвращает шаблон.
- * @param string $name Имя шаблона.
- * @param null|array $vars Переменные, передаваемые внутрь.
- * @return View Шаблон.
- */
-function View(string $name, ?array $vars = []): View {
-	return new View($name, $vars);
-}

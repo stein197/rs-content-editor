@@ -2,34 +2,34 @@
 
 namespace App;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use App\Http\Request;
+use App\Http\Response;
+use App\HttpException;
 
 /**
  * Route controller base class.
- * @method ResponseInterface|View|string|array get(RequestInterface $request, ResponseInterface $response, array $requestVars)
- * @method ResponseInterface|View|string|array head(RequestInterface $request, ResponseInterface $response, array $requestVars)
- * @method ResponseInterface|View|string|array post(RequestInterface $request, ResponseInterface $response, array $requestVars)
- * @method ResponseInterface|View|string|array put(RequestInterface $request, ResponseInterface $response, array $requestVars)
- * @method ResponseInterface|View|string|array delete(RequestInterface $request, ResponseInterface $response, array $requestVars)
- * @method ResponseInterface|View|string|array connect(RequestInterface $request, ResponseInterface $response, array $requestVars)
- * @method ResponseInterface|View|string|array options(RequestInterface $request, ResponseInterface $response, array $requestVars)
- * @method ResponseInterface|View|string|array trace(RequestInterface $request, ResponseInterface $response, array $requestVars)
- * @method ResponseInterface|View|string|array patch(RequestInterface $request, ResponseInterface $response, array $requestVars)
+ * @method Response get(Request $request, Response $response)
+ * @method Response head(Request $request, Response $response)
+ * @method Response post(Request $request, Response $response)
+ * @method Response put(Request $request, Response $response)
+ * @method Response delete(Request $request, Response $response)
+ * @method Response connect(Request $request, Response $response)
+ * @method Response options(Request $request, Response $response)
+ * @method Response trace(Request $request, Response $response)
+ * @method Response patch(Request $request, Response $response)
  */
 abstract class Controller {
 
 	public function __construct() {}
 
 	/**
-	 * 
-	 * @param RequestInterface $request 
-	 * @param ResponseInterface $response 
-	 * @param array $requestVars 
-	 * @return View|ResponseInterface|string|array 
-	 * @throws HttpException В случае вызова функции `terminate()`.
+	 * Обрабатывает запрос и возвращает ответ.
+	 * @param Request $request
+	 * @param Response $response
+	 * @return Response
+	 * @throws HttpException Если был вызов метода `terminate()`
 	 */
-	public function handle(RequestInterface $request, ResponseInterface $response, array $requestVars): View | ResponseInterface | string | array {
-		return $this->{strtolower($request->getMethod())}($request, $response, $requestVars);
+	public function handle(Request $request, Response $response): Response {
+		return $this->{strtolower($request->request->getMethod())}($request, $response);
 	}
 }

@@ -6,7 +6,7 @@ final class View {
 	private string $path;
 	private object $vars;
 
-	public function __construct(private string $name, ?array $vars) {
+	public function __construct(private string $name, array $vars = []) {
 		$this->path = resolvePath('View/'.str_replace('.', DIRECTORY_SEPARATOR, $name).'.php');
 		$this->vars = (object) $vars;
 	}
@@ -17,7 +17,7 @@ final class View {
 		return ob_get_clean();
 	}
 
-	protected function include(string $name, ?array $vars = []): string {
+	protected function include(string $name, array $vars = []): string {
 		return (new self($name, array_merge((array) $this->vars, $vars)))->render();
 	}
 }

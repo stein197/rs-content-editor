@@ -2,15 +2,15 @@
 namespace App;
 
 use Exception;
-use Psr\Http\Message\ResponseInterface;
+use App\Http\Response;
 
 class HttpException extends Exception {
 
-	public function __construct(private ResponseInterface | View | string | array $response, ?string $message = null, ?int $code = null) {
+	public function __construct(private Response $response, ?string $message = null, ?int $code = null) {
 		parent::__construct($message, $code);
 	}
 
-	public function getResponse(): ResponseInterface | View | string | array {
+	public function getResponse(): Response {
 		return $this->response;
 	}
 }

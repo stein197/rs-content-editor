@@ -3,9 +3,11 @@ namespace App\Http;
 
 use Psr\Http\Message\RequestInterface;
 
+use function App\container;
+
 class Request {
 
-	public function __construct(public readonly RequestInterface $request, public readonly array $vars, public readonly array $query) {}
+	public function __construct(public RequestInterface $request, public array $query, public array $vars) {}
 
 	public function body(): string {
 		return $this->request->getBody()->getContents();
@@ -16,4 +18,16 @@ class Request {
 	
 	// TODO
 	public function file(string $path) {}
+
+	public function request(): RequestInterface {
+		return $this->request;
+	}
+
+	public function query(): array {
+		return $this->query;
+	}
+
+	public function vars(): array {
+		return $this->vars;
+	}
 }

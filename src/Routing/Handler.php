@@ -7,6 +7,8 @@ use FastRoute\Dispatcher;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use App\Controller\HtmlStatic;
+use App\Http\Request;
+use App\Http\Response;
 use App\HttpException;
 use App\View;
 
@@ -16,56 +18,36 @@ class Handler {
 
 	public function __construct(private string $requestMethod, private string $requestUri, private $routeInfo) {}
 
-	public function handle(RequestInterface $request): ResponseInterface {
+	public function handle(RequestInterface $request, array $query): ResponseInterface {
+		$req = new Request($request, $query ?? [], $this->routeInfo[2] ?? []);
+		/** @var Response */
+		$res = container()->make(Response::class);
 		switch ($this->routeInfo[0]) {
 			case Dispatcher::NOT_FOUND:
-				$response = container()->make(ResponseInterface::class)->withStatus(404);
-				$result = (new HtmlStatic())->handle($request, $response, $this->routeInfo[2] ?? []);
-				return $this->createResponse($result, $response);
+				return (new HtmlStatic())->handle($req, $res->status(404))->response();
 			case Dispatcher::METHOD_NOT_ALLOWED:
-				return container()->make(ResponseInterface::class)->withStatus(405);
+				return $res->status(405)->response();
 			case Dispatcher::FOUND:
-				/** @var ResponseInterface */
-				$response = container()->make(ResponseInterface::class);
 				try {
-					foreach ($this->routeInfo[1] as $handler) {
-						$result = $this->getResult($handler, $request, $response);
-						$response = $this->createResponse($result, $response);
-					}
+					foreach ($this->routeInfo[1] as $handler)
+						$res = $this->getResult($handler, $req, $res);
 				} catch (HttpException $ex) {
-					$response = $this->createResponse($ex->getResponse(), $response);
+					$res = $ex->getResponse();
 				}
-				return $response;
+				return $res->response();
 		}
 	}
 
-	private function getResult(mixed $handler, RequestInterface $request, ResponseInterface $response): mixed {
+	private function getResult(mixed $handler, Request $request, Response $response): Response {
 		if (is_callable($handler)) {
-			return $handler($request, $response, $this->routeInfo[2]);
+			return $handler($request, $response);
 		} elseif (is_string($handler)) {
 			if (class_exists($handler))
-				return (new $handler())->handle($request, $response, $this->routeInfo[2] ?? []);
+				return (new $handler())->handle($request, $response);
 			else
 				throw new Exception("Class \"{$handler}\" not found", 500);
 		} else {
 			throw new Exception("Unknown handler {$handler}");
-		}
-	}
-
-	private function createResponse(mixed $result, ResponseInterface $response): ResponseInterface {
-		if ($result instanceof ResponseInterface) {
-			return $result;
-		} else {
-			switch (true) {
-				case $result instanceof View:
-					$result = $result->render();
-					break;
-				case is_array($result):
-					$result = json_encode($result);
-					break;
-			}
-			$response->getBody()->write($result);
-			return $response;
 		}
 	}
 }

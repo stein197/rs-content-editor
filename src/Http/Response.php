@@ -8,13 +8,13 @@ use App\View;
 
 class Response {
 
-	public function __construct(public readonly ResponseInterface $response) {}
+	public function __construct(private ResponseInterface $response) {}
 
 	public function json(array $data): self {
 		return $this->body(json_encode($data));
 	}
 
-	public function view(string $name, ?array $data = null): self {
+	public function view(string $name, array $data = []): self {
 		return $this->body((new View($name, $data))->render());
 	}
 
@@ -37,10 +37,14 @@ class Response {
 	public function cookie(string $key, ?string $value): self {}
 
 	public function header(string $key, null | string | array $value): self {
-		return new self($this->response->withHeader($key, $value));
+		return new self($value ? $this->response->withHeader($key, $value) : $this->response->withoutHeader($key));
 	}
 
 	public function body($resource): self {
 		return new self($this->response->withBody(Utils::streamFor($resource)));
+	}
+
+	public function response(): ResponseInterface {
+		return $this->response;
 	}
 }

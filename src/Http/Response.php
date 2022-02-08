@@ -38,8 +38,8 @@ class Response {
 		return new self($this->response->withStatus($status));
 	}
 
-	public function redirect(string $path, ?int $status): never {
-		$this->header('Location', $path)->status($status ?? $this->response->getStatusCode())->terminate();
+	public function redirect(string $path, int $status = 301): never {
+		$this->header('Location', $path)->status($status)->terminate();
 	}
 
 	public function terminate(): never {

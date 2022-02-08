@@ -11,7 +11,7 @@ use function App\container;
 
 class LoadDatabase extends Controller {
 
-	public function handlehandle(Request $request, Response $response): Response {
+	public function handle(Request $request, Response $response): Response {
 		try {
 			container()->get(mysqli::class);
 			return $response;

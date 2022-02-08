@@ -1,13 +1,13 @@
 <?php
 namespace App;
 
-final class Template {
+final class View {
 
 	private string $path;
 	private object $vars;
 
 	public function __construct(private string $name, ?array $vars) {
-		$this->path = resolvePath('template/'.str_replace('.', DIRECTORY_SEPARATOR, $name).'.php');
+		$this->path = resolvePath('View/'.str_replace('.', DIRECTORY_SEPARATOR, $name).'.php');
 		$this->vars = (object) $vars;
 	}
 

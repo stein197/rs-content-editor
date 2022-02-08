@@ -8,8 +8,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use App\Controller\HtmlStatic;
 use App\HttpException;
-use App\Template;
-use RuntimeException;
+use App\View;
 
 use function App\container;
 
@@ -58,7 +57,7 @@ class Handler {
 			return $result;
 		} else {
 			switch (true) {
-				case $result instanceof Template:
+				case $result instanceof View:
 					$result = $result->render();
 					break;
 				case is_array($result):

@@ -67,4 +67,13 @@ class Response {
 	public function response(): ResponseInterface {
 		return $this->response;
 	}
+
+	// TODO: Use it
+	public static function send(self $response): void {
+		foreach ($response->response->getHeaders() as $name => $values)
+			foreach ($values as $value)
+				header(sprintf('%s: %s', $name, $value), false);
+		http_response_code($response->response->getStatusCode());
+		file_put_contents('php://output', $response->response->getBody());
+	}
 }

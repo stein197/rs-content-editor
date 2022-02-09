@@ -21,19 +21,25 @@ class LoadConfig extends Controller {
 						[
 							'label' => 'Хост',
 							'name' => 'db[host]',
+							'default' => 'localhost',
+							'required' => true
 						],
 						[
 							'label' => 'Пользователь',
-							'name' => 'db[user]'
+							'name' => 'db[user]',
+							'default' => 'root',
+							'required' => true
 						],
 						[
 							'label' => 'Пароль',
 							'name' => 'db[password]',
-							'type' => 'password'
+							'type' => 'password',
+							'required' => true
 						],
 						[
 							'label' => 'Имя базы данных',
-							'name' => 'db[name]'
+							'name' => 'db[name]',
+							'required' => true
 						]
 					]
 				])->{$request->path() === '/' ? 'terminate' : 'redirect'}('/');

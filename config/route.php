@@ -1,10 +1,11 @@
 <?php
 
-use App\Controller\Index;
-use App\Controller\HtmlStatic;
 use App\Middleware\CheckSetup;
 use App\Middleware\OutputJson;
 use App\Middleware\HtmlPrettifier;
+use App\Controller\Setup;
+use App\Controller\Index;
+use App\Controller\HtmlStatic;
 use App\Routing\Builder;
 
 return function (Builder $b) {
@@ -14,4 +15,5 @@ return function (Builder $b) {
 		});
 		$b->get('/', HtmlStatic::class)->after(HtmlPrettifier::class);
 	});
+	$b->post('/setup/', Setup::class)->name('setup');
 };

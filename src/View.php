@@ -19,6 +19,6 @@ final class View {
 	}
 
 	protected function include(string $name, array $vars = []): string {
-		return (new self($name, array_merge((array) $this->vars, $vars)))->render();
+			return (new self($name, array_merge((array) $this->vars, $vars)))->render();
 	}
 }

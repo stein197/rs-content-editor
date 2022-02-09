@@ -4,37 +4,32 @@ namespace App\Routing;
 
 use Exception;
 use FastRoute\Dispatcher;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use App\Controller\HtmlStatic;
 use App\Http\Request;
 use App\Http\Response;
 use App\Http\TerminateException;
-use App\View;
-
 use function App\container;
 
 class Handler {
 
-	public function __construct(private string $requestMethod, private string $requestUri, private $routeInfo) {}
+	public function __construct(private $routeInfo) {}
 
-	public function handle(RequestInterface $request, array $query): ResponseInterface {
-		$req = new Request($request, $query ?? [], $this->routeInfo[2] ?? []);
+	public function handle(Request $request): Response {
 		/** @var Response */
-		$res = container()->make(Response::class);
+		$response = container()->make(Response::class);
 		switch ($this->routeInfo[0]) {
 			case Dispatcher::NOT_FOUND:
-				return (new HtmlStatic())->handle($req, $res->status(404))->response();
+				return (new HtmlStatic())->handle($request, $response->status(404));
 			case Dispatcher::METHOD_NOT_ALLOWED:
-				return $res->status(405)->response();
+				return $response->status(405);
 			case Dispatcher::FOUND:
 				try {
 					foreach ($this->routeInfo[1] as $handler)
-						$res = $this->getResult($handler, $req, $res);
+						$response = $this->getResult($handler, $request, $response);
 				} catch (TerminateException $ex) {
-					$res = $ex->getResponse();
+					$response = $ex->getResponse();
 				}
-				return $res->response();
+				return $response;
 		}
 	}
 

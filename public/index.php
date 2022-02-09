@@ -1,20 +1,19 @@
 <?php
 require __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
 
-use DI\Container;
-use Psr\Http\Message\RequestInterface;
+use Psr\Container\ContainerInterface;
+use App\Http\Request;
+use App\Http\Response;
 use App\Routing\Router;
 use function App\container;
-use function App\send;
 
 error_reporting(E_ALL ^ (E_DEPRECATED | E_WARNING));
 
-(function (Container $container): void {
-	/** @var RequestInterface */
-	$request = $container->get(RequestInterface::class);
+(function (ContainerInterface $container): void {
+	$request = Request::current();
 	/** @var Router */
 	$router = $container->get(Router::class);
-	$handler = $router->dispatch($request->getMethod(), explode('?', $request->getUri())[0]);
-	$response = $handler->handle($request, container()->get('request.query'));
-	send($response);
+	$handler = $router->dispatch($request->request()->getMethod(), explode('?', $request->request()->getUri())[0]);
+	$response = $handler->handle($request);
+	Response::send($response);
 })(container());

@@ -12,8 +12,8 @@ final class Router {
 	public function dispatch(string $requestMethod, string $requestUri): Handler {
 		$dispatcher = simpleDispatcher(function (RouteCollector $r): void {
 			foreach ($this->routeBuilder->getRoutes() as $route)
-				$r->addRoute($route->method, $route->route, $route->handlers);
+				$r->addRoute($route->getMethod(), $route->getRoute(), $route->getHandlers());
 		});
-		return new Handler($requestMethod, $requestUri, $dispatcher->dispatch($requestMethod, $requestUri));
+		return new Handler($dispatcher->dispatch($requestMethod, $requestUri));
 	}
 }

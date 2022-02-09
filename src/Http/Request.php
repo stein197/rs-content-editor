@@ -2,19 +2,25 @@
 namespace App\Http;
 
 use Psr\Http\Message\RequestInterface;
-
 use function App\container;
 
 class Request {
 
-	public function __construct(public RequestInterface $request, public array $query, public array $vars) {}
+	private ?array $params;
 
-	public function body(): string {
-		return $this->request->getBody()->getContents();
+	public function __construct(private RequestInterface $request, private array $get, private array $post, private array $cookie, private array $files) {}
+
+	public function get(string $key): mixed {
+		return @$this->get[$key];
 	}
 
-	// TODO
-	public function cookie(string $key): string {}
+	public function post(string $key): mixed {
+		return @$this->post[$key];
+	}
+
+	public function cookie(string $key): ?string {
+		return @$this->cookie[$key];
+	}
 	
 	// TODO
 	public function file(string $path) {}
@@ -23,17 +29,19 @@ class Request {
 		return $this->request;
 	}
 
-	public function query(): array {
-		return $this->query;
+	public function param(string $key): ?string {
+		return @$this->params[$key];
 	}
 
-	public function vars(): array {
-		return $this->vars;
+	public function setParams(array $params): void {
+		if (!$this->params)
+			$this->params = $params;
 	}
 
-	// TODO
-	public static function fromGlobals(): self {}
-
-	// TODO
-	public static function fromCLI(): self {}
+	public static function current(): self {
+		static $request;
+		if (!$request)
+			$request = new self(container()->get(RequestInterface::class), $_GET, $_POST, $_COOKIE, $_FILES);
+		return $request;
+	}
 }

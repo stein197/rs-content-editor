@@ -116,7 +116,18 @@ final class Builder {
 			if (@$item['group'] != null)
 				self::flatConfig($item['group'], $result, $prefix.$item['prefix'], $curBefore, $curAfter, $curWithout);
 			else
-				$result[] = new RouteInfo(strtoupper($item['method']), preg_replace('/\/+/', '/', $prefix.$item['route']), array_values(array_diff(array_merge($curBefore, [$item['handler']], $curAfter), $curWithout)));
+				$result[] = new RouteInfo(
+					strtoupper($item['method']),
+					preg_replace('/\/+/', '/', $prefix.$item['route']),
+					array_filter(
+						array_merge(
+							$curBefore,
+							[$item['handler']],
+							$curAfter
+						),
+						fn (string | callable $handler): bool => !in_array($handler, $curWithout)
+					)
+				);
 		}
 	}
 }

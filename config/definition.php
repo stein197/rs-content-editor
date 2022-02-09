@@ -28,5 +28,6 @@ return [
 	'db.user' => fn () => config()->get('db.user'),
 	'db.password' => fn () => config()->get('db.password'),
 	'db.name' => fn () => config()->get('db.name'),
-	'config.route' => fn () => require resolvePath('config/route.php')
+	'config.route' => fn () => require resolvePath('config/route.php'),
+	'response.404' => fn () => require resolvePath('config/404.php')
 ];

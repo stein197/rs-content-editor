@@ -20,7 +20,7 @@ class Handler {
 		$response = container()->make(Response::class);
 		switch ($this->routeInfo[0]) {
 			case Dispatcher::NOT_FOUND:
-				return self::getNotFoundResponse($request, $response);
+				return container()->get('response.404')($request, $response);
 			case Dispatcher::METHOD_NOT_ALLOWED:
 				return $response->status(Status::METHOD_NOT_ALLOWED);
 			case Dispatcher::FOUND:
@@ -31,7 +31,7 @@ class Handler {
 							case Response::TYPE_REDIRECT:
 								break 2;
 							case Response::TYPE_NOT_FOUND:
-								return self::getNotFoundResponse($request, $response);
+								return container()->get('response.404')($request, $response);
 						}
 					}
 				} catch (TerminateException $ex) {
@@ -39,10 +39,6 @@ class Handler {
 				}
 				return $response;
 		}
-	}
-
-	private static function getNotFoundResponse(Request $request, Response $response): Response {
-		return (new HtmlStatic())->handle($request, $response->status(Status::NOT_FOUND));
 	}
 
 	private function getResult(mixed $handler, Request $request, Response $response): Response {

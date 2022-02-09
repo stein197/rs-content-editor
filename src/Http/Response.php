@@ -13,7 +13,7 @@ class Response {
 	public function __construct(private ResponseInterface $response) {}
 
 	public function json(array $data): self {
-		return $this->body(json_encode($data));
+		return $this->header('Content-Type', 'application/json')->body(json_encode($data));
 	}
 
 	public function view(string $name, array $data = []): self {

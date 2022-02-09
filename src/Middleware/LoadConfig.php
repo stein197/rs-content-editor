@@ -20,7 +20,7 @@ class LoadConfig extends Controller {
 				if ((string) $request->psr()->getUri() === '/')
 					$response->view('config')->terminate();
 				else
-					$response->view('config')->redirect('/');
+					return $response->view('config')->redirect('/');
 		return $response;
 	}
 }

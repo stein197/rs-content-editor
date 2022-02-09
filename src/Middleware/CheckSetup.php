@@ -7,7 +7,7 @@ use App\Http\Response;
 use App\Controller;
 use function App\config;
 
-class LoadConfig extends Controller {
+class CheckSetup extends Controller {
 
 	private const REQUIRED_PROPERTIES = [
 		'host', 'user', 'password', 'name'

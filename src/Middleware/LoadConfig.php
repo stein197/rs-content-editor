@@ -17,7 +17,7 @@ class LoadConfig extends Controller {
 		config()->load();
 		foreach (self::REQUIRED_PROPERTIES as $prop)
 			if (config()->get($prop) === null)
-				if ((string) $request->psr()->getUri() === '/')
+				if ($request->path() === '/')
 					$response->view('config')->terminate();
 				else
 					return $response->view('config')->redirect('/');

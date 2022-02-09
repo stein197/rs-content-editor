@@ -3,7 +3,7 @@ namespace App\Routing;
 
 final class RouteInfo {
 
-	public function __construct(private string $method, private string $route, private array $handlers) {}
+	public function __construct(private string $method, private string $route, private array $handlers, private ?string $name) {}
 
 	public function getMethod(): string {
 		return $this->method;
@@ -15,5 +15,9 @@ final class RouteInfo {
 
 	public function getHandlers(): array {
 		return $this->handlers;
+	}
+
+	public function getName(): ?string {
+		return $this->name;
 	}
 }

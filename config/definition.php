@@ -12,6 +12,7 @@ use function App\resolvePath;
 use function App\config;
 
 return [
+	FastRoute\RouteParser\Std::class => create(FastRoute\RouteParser\Std::class),
 	RequestInterface::class => create(Request::class)->constructor(get('request.method'), get('request.uri'), get('request.headers'), file_get_contents('php://input'), get('request.protocol')),
 	ResponseInterface::class => create(Response::class)->constructor(200, ['Content-Type' => 'text/html']),
 	App\Http\Response::class => create(App\Http\Response::class)->constructor(get(ResponseInterface::class)),

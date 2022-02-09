@@ -7,13 +7,25 @@ use function FastRoute\simpleDispatcher;
 
 final class Router {
 
-	public function __construct(private Builder $routeBuilder) {}
+	/** @var RouteInfo[] */
+	private array $routes;
+
+	public function __construct(Builder $routeBuilder) {
+		$this->routes = $routeBuilder->getRoutes();
+	}
 
 	public function dispatch(string $requestMethod, string $requestUri): Handler {
 		$dispatcher = simpleDispatcher(function (RouteCollector $r): void {
-			foreach ($this->routeBuilder->getRoutes() as $route)
+			foreach ($this->routes as $route)
 				$r->addRoute($route->getMethod(), $route->getRoute(), $route->getHandlers());
 		});
 		return new Handler($dispatcher->dispatch($requestMethod, $requestUri));
+	}
+
+	public function getRouteByName(string $name): ?RouteInfo {
+		foreach ($this->routes as $route)
+			if ($route->getName() === $name)
+				return $route;
+		return null;
 	}
 }

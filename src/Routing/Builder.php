@@ -93,6 +93,10 @@ final class Builder {
 		return $this;
 	}
 
+	public function name(string $name): void {
+		$this->config[sizeof($this->config) - 1]['name'] = $name;
+	}
+	
 	/**
 	 * Возвращает линейный список маршрутов.
 	 * @return RouteInfo[]
@@ -126,7 +130,8 @@ final class Builder {
 							$curAfter
 						),
 						fn (string | callable $handler): bool => !in_array($handler, $curWithout)
-					)
+					),
+					$item['name']
 				);
 		}
 	}

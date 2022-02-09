@@ -51,7 +51,6 @@ class Response {
 	public function notFound(): self {
 		$this->type = self::TYPE_NOT_FOUND;
 		return $this->status(Status::NOT_FOUND);
-		// return $this->json(['gg' => true]);
 	}
 
 	public function terminate(): never {

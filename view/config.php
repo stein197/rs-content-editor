@@ -9,22 +9,12 @@
 				<div class="card">
 					<div class="card-body">
 						<form action="" method="POST">
-							<div class="form-group mb-2">
-								<p class="fw-bold mb-1">Хост</p>
-								<input type="text" required class="form-control" placeholder="Хост" name="host"/>
-							</div>
-							<div class="form-group mb-2">
-								<p class="fw-bold mb-1">Пользователь</p>
-								<input type="text" required class="form-control" placeholder="Пользователь" name="user"/>
-							</div>
-							<div class="form-group mb-2">
-								<p class="fw-bold mb-1">Пароль</p>
-								<input type="password" class="form-control" placeholder="Пароль" name="password"/>
-							</div>
-							<div class="form-group mb-2">
-								<p class="fw-bold mb-1">БД</p>
-								<input type="text" required class="form-control" placeholder="БД" name="name"/>
-							</div>
+							<? foreach ($this->vars->fields as $field): ?>
+								<div class="form-group mb-2">
+									<p class="fw-bold mb-1"><?= $field->label ?></p>
+									<input type="<?= $field->type ?? 'text' ?>" required class="form-control" placeholder="<?= $field->label ?>" name="<?= $field->name ?>"/>
+								</div>
+							<? endforeach ?>
 							<button class="btn btn-primary w-100">Далее</button>
 						</form>
 					</div>

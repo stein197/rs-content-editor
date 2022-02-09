@@ -21,6 +21,10 @@ const HTTP_METHODS = [
 	'PATCH'
 ];
 
+function init(): void {
+	config()->load();
+}
+
 function container(): Container {
 	static $container;
 	if (!$container) {
@@ -89,7 +93,7 @@ function route(string $name, ?array $params = null): ?string {
 function array2object(array $data): object {
 	$result = new stdClass;
 	foreach ($data as $key => $value)
-		$result->{$key} = is_array($value) && !array_is_list($value) ? array2object($value) : $value;
+		$result->{$key} = is_array($value) ? array2object($value) : $value;
 	return $result;
 }
 

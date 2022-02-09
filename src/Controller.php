@@ -30,6 +30,6 @@ abstract class Controller {
 	 * @throws TerminateException Если был вызов метода `terminate()`
 	 */
 	public function handle(Request $request, Response $response): Response {
-		return $this->{strtolower($request->request->getMethod())}($request, $response);
+		return $this->{strtolower($request->psr()->getMethod())}($request, $response);
 	}
 }

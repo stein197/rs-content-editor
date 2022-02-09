@@ -50,3 +50,7 @@ function normalizePath(string $path): string {
 	}
 	return join(DIRECTORY_SEPARATOR, $result);
 }
+
+function config(): Config {
+	return container()->get(Config::class);
+}

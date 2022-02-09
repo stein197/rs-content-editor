@@ -1,5 +1,6 @@
 <?php
 
+use App\Config;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
@@ -14,6 +15,7 @@ return [
 	ResponseInterface::class => create(Response::class)->constructor(200, ['Content-Type' => 'text/html']),
 	App\Http\Response::class => create(App\Http\Response::class)->constructor(get(ResponseInterface::class)),
 	Builder::class => create()->constructor(get('config.route')),
+	Config::class => create()->constructor(resolvePath('config.json')),
 	mysqli::class => create()->constructor(get('db.host'), get('db.user'), get('db.password'), get('db.name')),
 	'request.method' => $_SERVER['REQUEST_METHOD'],
 	'request.uri' => $_SERVER['REQUEST_URI'],

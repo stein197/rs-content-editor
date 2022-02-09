@@ -16,7 +16,7 @@ class LoadConfig extends Controller {
 	public function handle(Request $request, Response $response): Response {
 		config()->load();
 		foreach (self::REQUIRED_PROPERTIES as $prop)
-			if (config()->get($prop) == null)
+			if (config()->get($prop) === null)
 				if ((string) $request->psr()->getUri() === '/')
 					$response->view('config')->terminate();
 				else

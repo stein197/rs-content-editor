@@ -1,3 +1,4 @@
+/config.json
 vendor/
 node_modules/
 composer.lock

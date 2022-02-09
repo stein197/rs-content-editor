@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use Exception;
 use stdClass;
 final class View {
 
@@ -19,6 +20,10 @@ final class View {
 	}
 
 	protected function include(string $name, array $vars = []): string {
+		try {
 			return (new self($name, array_merge((array) $this->vars, $vars)))->render();
+		} catch (Exception $ex) {
+			return $ex->getMessage();
+		}
 	}
 }

@@ -25,7 +25,7 @@ class Request {
 	// TODO
 	public function file(string $path) {}
 
-	public function request(): RequestInterface {
+	public function psr(): RequestInterface {
 		return $this->request;
 	}
 

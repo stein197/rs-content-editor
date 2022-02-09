@@ -64,7 +64,7 @@ class Response {
 		return new self($this->response->withBody(Utils::streamFor($resource)));
 	}
 
-	public function response(): ResponseInterface {
+	public function psr(): ResponseInterface {
 		return $this->response;
 	}
 

@@ -12,7 +12,7 @@ class HtmlPrettifier extends Controller {
 
 	public function handle(Request $request, Response $response): Response {
 		$tidy = new Tidy;
-		$tidy->parseString($response->response()->getBody(), [
+		$tidy->parseString($response->psr()->getBody(), [
 			'indent' => true,
 			'indent-spaces' => 4,
 			'indent-with-tabs' => true,

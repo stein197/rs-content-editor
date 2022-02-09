@@ -13,7 +13,7 @@ error_reporting(E_ALL ^ (E_DEPRECATED | E_WARNING));
 	$request = Request::current();
 	/** @var Router */
 	$router = $container->get(Router::class);
-	$handler = $router->dispatch($request->request()->getMethod(), explode('?', $request->request()->getUri())[0]);
+	$handler = $router->dispatch($request->psr()->getMethod(), explode('?', $request->psr()->getUri())[0]);
 	$response = $handler->handle($request);
 	Response::send($response);
 })(container());

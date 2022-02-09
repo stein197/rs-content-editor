@@ -3,25 +3,29 @@
 	<div class="container">
 		<div class="row justify-content-center">
 			<div class="col col-12 col-md-6 col-lg-4 col-xl-3">
+				<? if ($this->vars->error): ?>
+					<p class="alert alert-danger"><?= $this->vars->error->message ?></p>
+				<? endif ?>
 				<div class="card">
 					<div class="card-body">
 						<form action="" method="POST">
 							<div class="form-group mb-2">
 								<p class="fw-bold mb-1">Хост</p>
-								<input type="text" class="form-control" placeholder="Хост" name="host"/>
+								<input type="text" required class="form-control" placeholder="Хост" name="host"/>
 							</div>
 							<div class="form-group mb-2">
 								<p class="fw-bold mb-1">Пользователь</p>
-								<input type="text" class="form-control" placeholder="Пользователь" name="user"/>
+								<input type="text" required class="form-control" placeholder="Пользователь" name="user"/>
 							</div>
 							<div class="form-group mb-2">
 								<p class="fw-bold mb-1">Пароль</p>
 								<input type="password" class="form-control" placeholder="Пароль" name="password"/>
 							</div>
-							<div class="form-group">
+							<div class="form-group mb-2">
 								<p class="fw-bold mb-1">БД</p>
-								<input type="text" class="form-control" placeholder="БД" name="name"/>
+								<input type="text" required class="form-control" placeholder="БД" name="name"/>
 							</div>
+							<button class="btn btn-primary w-100">Далее</button>
 						</form>
 					</div>
 				</div>

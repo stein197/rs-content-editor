@@ -9,6 +9,7 @@ use App\Routing\Builder;
 use function DI\create;
 use function DI\get;
 use function App\resolvePath;
+use function App\config;
 
 return [
 	RequestInterface::class => create(Request::class)->constructor(get('request.method'), get('request.uri'), get('request.headers'), file_get_contents('php://input'), get('request.protocol')),
@@ -22,9 +23,9 @@ return [
 	'request.headers' => getallheaders(),
 	'request.protocol' => $_SERVER['SERVER_PROTOCOL'],
 	'request.query' => fn () => array_merge($_GET, $_POST),
-	'db.host' => fn () => $_ENV['DB_HOST'],
-	'db.user' => fn () => $_ENV['DB_USER'],
-	'db.password' => fn () => $_ENV['DB_PASSWORD'],
-	'db.name' => fn () => $_ENV['DB_NAME'],
+	'db.host' => fn () => config()->get('db.host'),
+	'db.user' => fn () => config()->get('db.user'),
+	'db.password' => fn () => config()->get('db.password'),
+	'db.name' => fn () => config()->get('db.name'),
 	'config.route' => fn () => require resolvePath('config/route.php')
 ];

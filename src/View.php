@@ -1,14 +1,15 @@
 <?php
 namespace App;
 
+use stdClass;
 final class View {
 
 	private string $path;
-	private object $vars;
+	private stdClass $vars;
 
 	public function __construct(private string $name, array $vars = []) {
 		$this->path = resolvePath('View/'.str_replace('.', DIRECTORY_SEPARATOR, $name).'.php');
-		$this->vars = (object) $vars;
+		$this->vars = array2object($vars);
 	}
 
 	public function render(): string {

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use stdClass;
 use DI\Container;
 use DI\ContainerBuilder;
 
@@ -53,4 +54,18 @@ function normalizePath(string $path): string {
 
 function config(): Config {
 	return container()->get(Config::class);
+}
+
+function array2object(array $data): object {
+	$result = new stdClass;
+	foreach ($data as $key => $value)
+		$result->{$key} = is_array($value) && !array_is_list($value) ? array2object($value) : $value;
+	return $result;
+}
+
+function object2array(stdClass $data): array {
+	$result = (array) $data;
+	foreach ($result as $key => &$value)
+		$value = $value instanceof stdClass ? object2array($value) : $value;
+	return $result;
 }

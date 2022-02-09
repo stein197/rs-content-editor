@@ -23,11 +23,10 @@ return [
 	'request.uri' => $_SERVER['REQUEST_URI'],
 	'request.headers' => getallheaders(),
 	'request.protocol' => $_SERVER['SERVER_PROTOCOL'],
-	'request.query' => fn () => array_merge($_GET, $_POST),
-	'db.host' => fn () => config()->get('db.host'),
-	'db.user' => fn () => config()->get('db.user'),
-	'db.password' => fn () => config()->get('db.password'),
-	'db.name' => fn () => config()->get('db.name'),
+	'db.host' => fn () => config()->db?->host,
+	'db.user' => fn () => config()->db?->user,
+	'db.password' => fn () => config()->db?->password,
+	'db.name' => fn () => config()->db?->name,
 	'config.route' => fn () => require resolvePath('config/route.php'),
 	'response.404' => fn () => require resolvePath('config/404.php')
 ];

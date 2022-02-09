@@ -1,13 +1,12 @@
 <?php
 namespace App;
 
-use Exception;
 use ParseError;
 use stdClass;
 
 final class Config {
 
-	public ?object $data;
+	private ?stdClass $data;
 
 	public function __construct(private string $path) {}
 
@@ -30,91 +29,7 @@ final class Config {
 		return !!file_put_contents($this->path, json_encode($this->data, JSON_PRETTY_PRINT));
 	}
 
-	public function get(string $query): mixed {
-		$parsedQuery = self::parseQuery($query);
-		return $this->getElementAt($parsedQuery, sizeof($parsedQuery) - 1);
-	}
-
-	public function set(string $query, mixed $value): void {
-		$parsedQuery = self::parseQuery($query);
-		$element = &$this->getElementAt($parsedQuery, sizeof($parsedQuery) - 2);
-		$element->{$parsedQuery[sizeof($parsedQuery) - 1]} = $value;
-	}
-
-	private static function parseQuery(string $query): array {
-		$result = [];
-		$curPart = '';
-		$curQuote = null;
-		for ($i = 0; $i < mb_strlen($query); $i++) {
-			$char = $query[$i];
-			$prevChar = @$query[$i - 1];
-			switch ($char) {
-				case '.':
-					if ($curQuote) {
-						$curPart .= $char;
-					} else {
-						if ($curPart)
-							$result[] = $curPart;
-						$curPart = '';
-					}
-					break;
-				case '[':
-					if ($curQuote) {
-						$curPart .= $char;
-					} else {
-						if ($curPart)
-							$result[] = $curPart;
-						$curPart = '';
-					}
-					break;
-				case ']':
-					if ($curQuote) {
-						$curPart .= $char;
-					}
-					break;
-				case '\'':
-				case '"':
-					if ($curQuote) {
-						if ($curQuote === $char) {
-							if ($prevChar === '\\') {
-								$curPart .= $char;
-							} else {
-								$curQuote = null;
-								$result[] = $curPart;
-								$curPart = '';
-							}
-						} else {
-							$curPart .= $char;
-						}
-					} else {
-						$curQuote = $char;
-					}
-					break;
-				default:
-					$curPart .= $char;
-			}
-		}
-		if ($curPart)
-			$result[] = $curPart;
-		return $result;
-	}
-
-	private function &getElementAt(array $parsedQuery, int $index): mixed {
-		$curValue = &$this->data;
-		for ($i = 0; $i < sizeof($parsedQuery) - ($index + 1); $i++)
-			array_pop($parsedQuery);
-		try {
-			foreach ($parsedQuery as $part) {
-				if ($curValue === null)
-					break;
-				if (is_int($part))
-					$curValue = &$curValue[$part];
-				else
-					$curValue = &$curValue->{$part};
-			}
-			return $curValue;
-		} catch (Exception) {
-			return null;
-		}
+	public function __get(string $name): mixed {
+		return $this->data->{$name};
 	}
 }

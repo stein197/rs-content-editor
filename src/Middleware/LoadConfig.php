@@ -16,11 +16,11 @@ class LoadConfig extends Controller {
 	public function handle(Request $request, Response $response): Response {
 		foreach (self::REQUIRED_PROPERTIES as $prop)
 			if (config()->db?->{$prop} === null)
-				return $response->view('config', [
+				return $response->view('form', [
 					'fields' => [
 						[
 							'label' => 'Хост',
-							'name' => 'db[host]'
+							'name' => 'db[host]',
 						],
 						[
 							'label' => 'Пользователь',

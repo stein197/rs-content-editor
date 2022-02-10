@@ -14,6 +14,7 @@ class Response {
 	public const TYPE_NOT_FOUND = 1;
 
 	private int $type = -1;
+	private array $cookie = [];
 	
 	public function __construct(private ResponseInterface $response) {}
 
@@ -57,8 +58,19 @@ class Response {
 		throw new TerminateException($this);
 	}
 
-	// TODO
-	public function cookie(string $key, ?string $value): self {}
+	public function cookie(string $key, ?string $value = null, int $expires = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httpOnly = false): self {
+		$result = clone $this;
+		$result->cookie[] = [
+			'key' => $key,
+			'value' => $value,
+			'expires' => $expires,
+			'path' => $path,
+			'domain' => $domain,
+			'secure' => $secure,
+			'httpOnly' => $httpOnly
+		];
+		return $result;
+	}
 
 	public function header(string $key, null | string | array $value): self {
 		return $this->with($value ? $this->response->withHeader($key, $value) : $this->response->withoutHeader($key));
@@ -93,6 +105,8 @@ class Response {
 		foreach ($response->response->getHeaders() as $name => $values)
 			foreach ($values as $value)
 				header(sprintf('%s: %s', $name, $value), false);
+		foreach ($response->cookie as $cookie)
+			setcookie($cookie['key'], $cookie['value'], $cookie['value'] === null ? -1 : $cookie['expires'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httpOnly']);
 		http_response_code($response->response->getStatusCode());
 		file_put_contents('php://output', $response->response->getBody());
 	}

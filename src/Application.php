@@ -2,6 +2,8 @@
 
 namespace App;
 
+use mysqli;
+use mysqli_sql_exception;
 use Psr\Container\ContainerInterface;
 
 final class Application {
@@ -18,5 +20,25 @@ final class Application {
 
 	public function config(): Config {
 		return $this->container->get(Config::class);
+	}
+
+	public function db(): ?mysqli {
+		try {
+			return $this->container->get(mysqli::class);
+		} catch (mysqli_sql_exception) {
+			return null;
+		}
+	}
+
+	// TODO
+	public function install(): void {
+		if ($this->isInstalled())
+			return;
+	}
+
+	// TODO
+	public function isInstalled(): bool {
+		if (!$this->db())
+			return false;
 	}
 }

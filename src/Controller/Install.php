@@ -6,7 +6,7 @@ use App\Http\Request;
 use App\Http\Response;
 use function App\config;
 
-class Setup extends Controller {
+class Install extends Controller {
 
 	public function post(Request $request, Response $response): Response {
 		config()->db->host = $request->post()->db->host;

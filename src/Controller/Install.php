@@ -13,7 +13,7 @@ class Install extends Controller {
 	];
 
 	public function post(Request $request, Response $response): Response {
-		if (app()->isInstalled())
+		if (app()->installed())
 			return $response->notFound();
 		self::verifyRequestData($request, $response);
 		foreach (self::DB_CREDENTIALS_NAMES as $name)

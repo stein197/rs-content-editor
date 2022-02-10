@@ -32,12 +32,12 @@ final class Application {
 
 	// TODO
 	public function install(): void {
-		if ($this->isInstalled())
+		if ($this->installed())
 			return;
 	}
 
 	// TODO
-	public function isInstalled(): bool {
+	public function installed(): bool {
 		if (!$this->db())
 			return false;
 	}

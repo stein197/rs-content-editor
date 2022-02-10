@@ -15,6 +15,6 @@ return function (Builder $b) {
 			});
 			$b->get('/', HtmlStatic::class);
 		});
-		$b->post('/install/', Install::class)->name('setup');
+		$b->post('/install/', Install::class)->name('install');
 	})->finally(Prettifier::class);
 };

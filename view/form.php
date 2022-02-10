@@ -8,7 +8,7 @@
 				<? endif ?>
 				<div class="card">
 					<div class="card-body">
-						<form action="<?= App\route('setup') ?>" method="POST">
+						<form action="<?= App\route('install') ?>" method="POST">
 							<? foreach ($this->vars->fields as $field): ?>
 								<div class="form-group mb-2">
 									<p class="fw-bold mb-1"><?= $field->label ?></p>

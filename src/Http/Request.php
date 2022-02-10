@@ -11,10 +11,13 @@ class Request {
 	private array $params;
 	private stdClass $get;
 	private stdClass $post;
+	private string $path;
+	private ?string $query;
 
 	public function __construct(private RequestInterface $request, array $get, array $post, private array $cookie, private array $files) {
 		$this->get = array2object($get);
 		$this->post = array2object($post);
+		[$this->path, $this->query] = explode('?', $request->getUri());
 	}
 
 	public function get(): stdClass {
@@ -26,10 +29,11 @@ class Request {
 	}
 
 	public function path(): string {
-		static $path;
-		if (!$path)
-			$path = explode('?', $this->request->getUri())[0];
-		return $path;
+		return $this->path;
+	}
+
+	public function query(): ?string {
+		return $this->query;
 	}
 
 	public function cookie(string $key): ?string {

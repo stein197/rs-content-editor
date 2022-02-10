@@ -21,10 +21,6 @@ const HTTP_METHODS = [
 	'PATCH'
 ];
 
-function init(): void {
-	config()->load();
-}
-
 function container(): Container {
 	static $container;
 	if (!$container) {
@@ -59,10 +55,6 @@ function normalizePath(string $path): string {
 	return join(DIRECTORY_SEPARATOR, $result);
 }
 
-function config(): Config {
-	return container()->get(Config::class);
-}
-
 function route(string $name, ?array $params = null): ?string {
 	/** @var Router */
 	$router = container()->get(Router::class);
@@ -88,6 +80,10 @@ function route(string $name, ?array $params = null): ?string {
 		}
 	}
 	return $result;
+}
+
+function app(): Application {
+	return container()->get(Application::class);
 }
 
 function array2object(array $data): object {

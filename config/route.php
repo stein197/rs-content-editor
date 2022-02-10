@@ -10,7 +10,7 @@ use App\Routing\Builder;
 
 return function (Builder $b) {
 	$b->before(CheckSetup::class)->group('/', function (Builder $b): void {
-		$b->before(OutputJson::class)->group('/api', function (Builder $b): void {
+		$b->before(OutputJson::class)->group('/api/', function (Builder $b): void {
 			$b->get('/', Index::class);
 		});
 		$b->get('/', HtmlStatic::class)->after(HtmlPrettifier::class);

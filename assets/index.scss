@@ -1,5 +1,14 @@
 @import "bootstrap/scss/bootstrap";
 
+*,
+*::before,
+*::after {
+	position: relative;
+	box-sizing: border-box;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
 html,
 body {
 	min-height: 100vh;

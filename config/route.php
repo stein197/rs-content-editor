@@ -11,9 +11,9 @@ return function (Builder $b) {
 	$b->group('/', function (Builder $b): void {
 		$b->before(CheckInstall::class)->group('/', function (Builder $b): void {
 			$b->group('/api/', function (Builder $b): void {
-				$b->get('/', Index::class);
+				$b->get('/', fn ($a, $b) => $b->json(['msg' => 'ok']));
 			});
-			$b->get('/', HtmlStatic::class);
+			$b->get('/', Index::class);
 		});
 		$b->post('/install/', Install::class)->name('install');
 	})->finally(Prettifier::class);

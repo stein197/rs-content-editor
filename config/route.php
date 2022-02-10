@@ -9,7 +9,6 @@ use App\Routing\Builder;
 use function App\app;
 
 return function (Builder $b) {
-	$mode = app()->config()->mode ?? "production";
 	$b->group('/', function (Builder $b): void {
 		$b->before(CheckInstall::class)->group('/', function (Builder $b): void {
 			$b->group('/api/', function (Builder $b): void {
@@ -18,5 +17,5 @@ return function (Builder $b) {
 			$b->get('/', Index::class);
 		});
 		$b->post('/install/', Install::class)->name('install');
-	})->finally(str_starts_with($mode, "d") ? Prettifier::class : Minifier::class);
+	})->finally(str_starts_with(app()->config()->mode ?? "production", "d") ? Prettifier::class : Minifier::class);
 };

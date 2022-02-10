@@ -22,7 +22,7 @@ class Response {
 	}
 
 	public function view(string $name, array $data = []): self {
-		return $this->body((new View($name, $data))->render());
+		return $this->header('Content-Type', 'text/html')->body((new View($name, $data))->render());
 	}
 
 	public function file(string $path): self {

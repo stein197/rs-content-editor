@@ -31,6 +31,6 @@ abstract class Controller {
 	 */
 	public function handle(Request $request, Response $response): Response {
 		$method = strtolower($request->psr()->getMethod());
-		return method_exists($this, $method) ? $this->{$method}($request, $response) : $response;
+		return in_array(strtoupper($method), HTTP_METHODS) && method_exists($this, $method) ? $this->{$method}($request, $response) : $response;
 	}
 }

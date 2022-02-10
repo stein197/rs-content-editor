@@ -19,6 +19,7 @@ final class Builder {
 
 	private const MIDDLEWARE_BEFORE = 'before';
 	private const MIDDLEWARE_AFTER = 'after';
+	private const MIDDLEWARE_FINALLY = 'finally';
 	private const MIDDLEWARE_WITHOUT = 'without';
 
 	private array $middleware = [];
@@ -45,6 +46,12 @@ final class Builder {
 	public function after(string | callable ...$middleware): self {
 		$this->middleware[self::MIDDLEWARE_BEFORE] = null;
 		$this->addMiddleware(self::MIDDLEWARE_AFTER, true, ...$middleware);
+		return $this;
+	}
+
+	public function finally(string | callable ...$middleware): self {
+		$this->middleware[self::MIDDLEWARE_BEFORE] = null;
+		$this->addMiddleware(self::MIDDLEWARE_FINALLY, true, ...$middleware);
 		return $this;
 	}
 
@@ -112,25 +119,29 @@ final class Builder {
 		$this->middleware[$key] = [];
 	}
 
-	private static function flatConfig($array, &$result, $prefix = '', $before = [], $after = [], $without = []) {
+	private static function flatConfig($array, &$result, $prefix = '', $before = [], $after = [], $without = [], $finally = []) {
 		foreach ($array as $item) {
 			$curBefore = array_merge($before, @$item[self::MIDDLEWARE_BEFORE] ?? []);
 			$curAfter = array_merge(@$item[self::MIDDLEWARE_AFTER] ?? [], $after);
 			$curWithout = array_merge($without, @$item[self::MIDDLEWARE_WITHOUT] ?? []);
+			$curFinally = array_merge($finally, @$item[self::MIDDLEWARE_FINALLY] ?? []);
 			if (@$item['group'] != null)
-				self::flatConfig($item['group'], $result, $prefix.$item['prefix'], $curBefore, $curAfter, $curWithout);
+				self::flatConfig($item['group'], $result, $prefix.$item['prefix'], $curBefore, $curAfter, $curWithout, $curFinally);
 			else
 				$result[] = new RouteInfo(
 					strtoupper($item['method']),
 					preg_replace('/\/+/', '/', $prefix.$item['route']),
-					array_filter(
-						array_merge(
-							$curBefore,
-							[$item['handler']],
-							$curAfter
+					[
+						'main' => array_filter(
+							array_merge(
+								$curBefore,
+								[$item['handler']],
+								$curAfter
+							),
+							fn (string | callable $handler): bool => !in_array($handler, $curWithout)
 						),
-						fn (string | callable $handler): bool => !in_array($handler, $curWithout)
-					),
+						'finally' => array_merge(@$item['finally'] ?? [], $curFinally)
+					],
 					$item['name']
 				);
 		}

@@ -25,7 +25,7 @@ class Handler {
 				return $response->status(Status::METHOD_NOT_ALLOWED);
 			case Dispatcher::FOUND:
 				try {
-					foreach ($this->routeInfo[1] as $handler) {
+					foreach ($this->routeInfo[1]['main'] as $handler) {
 						$response = $this->getResult($handler, $request, $response);
 						switch ($response->getType()) {
 							case Response::TYPE_REDIRECT:
@@ -37,6 +37,9 @@ class Handler {
 				} catch (TerminateException $ex) {
 					$response = $ex->getResponse();
 				}
+				if ($this->routeInfo[1]['finally'])
+					foreach ($this->routeInfo[1]['finally'] as $handler)
+						$response = $this->getResult($handler, $request, $response);
 				return $response;
 		}
 	}

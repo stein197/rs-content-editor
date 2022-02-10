@@ -15,7 +15,7 @@
 									<input type="<?= $field->type ?? 'text' ?>" <?= $field->required ? 'required' : '' ?> class="form-control" placeholder="<?= $field->label ?>" name="<?= $field->name ?>" value="<?= $field->default ?>"/>
 								</div>
 							<? endforeach ?>
-							<button class="btn btn-primary w-100">Далее</button>
+							<button class="btn btn-primary w-100"><?= $this->vars->button ?? 'Далее' ?></button>
 						</form>
 					</div>
 				</div>

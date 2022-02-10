@@ -46,7 +46,8 @@ class CheckSetup extends Controller {
 		foreach (self::REQUIRED_PROPERTIES as $prop)
 			if (app()->config()->db?->{$prop} === null)
 				return $response->view('form', [
-					'fields' => self::FORM_FIELDS
+					'fields' => self::FORM_FIELDS,
+					'button' => 'Подключиться и установить'
 				])->{$request->path() === '/' ? 'terminate' : 'redirect'}('/');
 		try {
 			container()->get(mysqli::class);
@@ -55,7 +56,8 @@ class CheckSetup extends Controller {
 				'error' => [
 					'message' => "Не удалось подключиться к базе данных: {$ex->getMessage()}"
 				],
-				'fields' => self::FORM_FIELDS
+				'fields' => self::FORM_FIELDS,
+				'button' => 'Подключиться и установить'
 			])->{$request->path() === '/' ? 'terminate' : 'redirect'}('/');
 		}
 		return $response;

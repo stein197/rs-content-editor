@@ -10,7 +10,7 @@ use App\Controller;
 use function App\app;
 use function App\container;
 
-class CheckSetup extends Controller {
+class CheckInstall extends Controller {
 
 	private const REQUIRED_PROPERTIES = [
 		'host', 'user', 'password', 'name'

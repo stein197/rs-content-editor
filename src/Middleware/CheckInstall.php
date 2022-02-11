@@ -8,7 +8,7 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Controller;
 use function App\app;
-use function App\container;
+use function App\route;
 
 class CheckInstall extends Controller {
 
@@ -47,17 +47,19 @@ class CheckInstall extends Controller {
 			if (app()->config()->db?->{$prop} === null)
 				return $response->view('form', [
 					'fields' => self::FORM_FIELDS,
-					'button' => 'Подключиться и установить'
+					'button' => 'Подключиться и установить',
+					'action' => route('install')
 				])->{$request->path() === '/' ? 'terminate' : 'redirect'}('/');
 		try {
-			container()->get(mysqli::class);
+			app()->container()->get(mysqli::class);
 		} catch (mysqli_sql_exception $ex) {
 			return $response->view('form', [
 				'error' => [
 					'message' => "Не удалось подключиться к базе данных: {$ex->getMessage()}"
 				],
 				'fields' => self::FORM_FIELDS,
-				'button' => 'Подключиться и установить'
+				'button' => 'Подключиться и установить',
+				'action' => route('install')
 			])->{$request->path() === '/' ? 'terminate' : 'redirect'}('/');
 		}
 		return $response;

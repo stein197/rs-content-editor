@@ -7,7 +7,6 @@ use mysqli_sql_exception;
 use App\Http\Request;
 use App\Http\Response;
 use App\Controller;
-use function App\app;
 use function App\route;
 
 class CheckInstall extends Controller {
@@ -44,14 +43,14 @@ class CheckInstall extends Controller {
 
 	public function handle(Request $request, Response $response): Response {
 		foreach (self::REQUIRED_PROPERTIES as $prop)
-			if (app()->config()->db?->{$prop} === null)
+			if ($this->app->config()->db?->{$prop} === null)
 				return $response->view('form', [
 					'fields' => self::FORM_FIELDS,
 					'button' => 'Подключиться и установить',
 					'action' => route('install')
 				])->{$request->path() === '/' ? 'terminate' : 'redirect'}('/');
 		try {
-			app()->container()->get(mysqli::class);
+			$this->app->container()->get(mysqli::class);
 		} catch (mysqli_sql_exception $ex) {
 			return $response->view('form', [
 				'error' => [

@@ -20,7 +20,7 @@ use App\Http\TerminateException;
  */
 abstract class Controller {
 
-	public function __construct() {}
+	public function __construct(protected Application $app) {}
 
 	/**
 	 * Обрабатывает запрос и возвращает ответ.

@@ -49,7 +49,7 @@ class Handler {
 			return $handler($request, $response);
 		} elseif (is_string($handler)) {
 			if (class_exists($handler))
-				return (new $handler())->handle($request, $response);
+				return container()->make($handler)->handle($request, $response);
 			else
 				throw new Exception("Class \"{$handler}\" not found", 500);
 		} else {

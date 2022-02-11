@@ -1,5 +1,15 @@
 # ROCKSTONE Content Editor
 
+## Установка и настройка
+Для установки следует запустить следующие команды:
+```
+composer install
+npm install
+npm run build
+composer server
+```
+После чего проект можно будет открыть проект в браузере по адресу localhost:80
+
 ## Структура директорий проекта
 - `.vscode/` Настройки проекта для Visual Studio Code
 - `assets/` Исходный код TypeScript и SASS

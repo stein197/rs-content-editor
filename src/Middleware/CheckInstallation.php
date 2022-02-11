@@ -10,7 +10,7 @@ use App\Controller;
 use App\Database;
 use function App\route;
 
-class CheckInstall extends Controller {
+class CheckInstallation extends Controller {
 
 	public function handle(Request $request, Response $response): Response {
 		foreach (Database::CREDENTIALS_CONFIG as $prop)

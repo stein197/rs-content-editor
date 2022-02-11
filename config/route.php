@@ -1,6 +1,8 @@
 <?php
 
 use App\Middleware\CheckInstallation;
+use App\Middleware\CheckConnection;
+use App\Middleware\CheckAdminUser;
 use App\Middleware\Prettifier;
 use App\Middleware\Minifier;
 use App\Controller\Install;
@@ -10,7 +12,7 @@ use function App\app;
 
 return function (Builder $b) {
 	$b->group('/', function (Builder $b): void {
-		$b->before(CheckInstallation::class)->group('/', function (Builder $b): void {
+		$b->before(CheckInstallation::class, CheckAdminUser::class, CheckConnection::class)->group('/', function (Builder $b): void {
 			$b->group('/api/', function (Builder $b): void {
 				$b->get('/', fn ($a, $b) => $b->json(['msg' => 'ok']));
 			});

@@ -7,6 +7,8 @@ use App\Http\TerminateException;
 use App\View;
 use function basename;
 use function App\resolvePath;
+use function App\app;
+use function App\array2object;
 
 class Response {
 
@@ -19,7 +21,7 @@ class Response {
 	}
 
 	public function view(string $name, array $data = []): self {
-		return $this->header('Content-Type', 'text/html')->body((new View($name, $data))->render());
+		return $this->header('Content-Type', 'text/html')->body((new View(app(), $name, $data))->render());
 	}
 
 	public function file(string $path): self {
@@ -37,8 +39,17 @@ class Response {
 	}
 
 	public function status(int $status): self {
-		return $this->response->getStatusCode() === $status ? $this : $this->with($this->response->withStatus($status));
+		return $this->response->getStatusCode() === $status ? $this : $this->withResponse($this->response->withStatus($status));
 	}
+
+	public function with(array $vars): self {
+		app()->session()->vars = array2object($vars);
+		app()->session()->save();
+		return $this;
+	}
+
+	// TODO
+	public function back() {}
 
 	public function redirect(string $path, int $status = Status::MOVED_PERMANENTLY) {
 		$this->header('Location', $path)->status($status)->terminate(TerminateType::REDIRECT);
@@ -67,7 +78,7 @@ class Response {
 	}
 
 	public function header(string $key, null | string | array $value): self {
-		return $this->with($value ? $this->response->withHeader($key, $value) : $this->response->withoutHeader($key));
+		return $this->withResponse($value ? $this->response->withHeader($key, $value) : $this->response->withoutHeader($key));
 	}
 
 	public function headers(array $values): self {
@@ -78,14 +89,14 @@ class Response {
 	}
 
 	public function body($resource): self {
-		return $this->with($this->response->withBody(Utils::streamFor($resource)));
+		return $this->withResponse($this->response->withBody(Utils::streamFor($resource)));
 	}
 
 	public function psr(): ResponseInterface {
 		return $this->response;
 	}
 
-	private function with(ResponseInterface $response): self {
+	private function withResponse(ResponseInterface $response): self {
 		$result = clone $this;
 		$result->response = $response;
 		return $result;

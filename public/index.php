@@ -17,4 +17,5 @@ error_reporting(E_ALL ^ (E_DEPRECATED | E_WARNING));
 	$handler = $router->dispatch($request->psr()->getMethod(), explode('?', $request->psr()->getUri())[0]);
 	$response = $handler->handle($request);
 	Response::send($response);
+	$app->terminate();
 })(container()->get(Application::class));

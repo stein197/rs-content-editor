@@ -6,7 +6,7 @@ use stdClass;
 
 final class Config {
 
-	private ?stdClass $data;
+	use JsonAccess;
 
 	public function __construct(private string $path) {}
 
@@ -23,14 +23,6 @@ final class Config {
 			file_put_contents($this->path, '{}');
 			$this->data = new stdClass();
 		}
-	}
-
-	public function __get(string $name): mixed {
-		return $this->data->{$name};
-	}
-
-	public function __set(string $name, mixed $value): void {
-		$this->data->{$name} = $value;
 	}
 
 	public function save(): bool {

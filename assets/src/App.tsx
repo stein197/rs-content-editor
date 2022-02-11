@@ -8,7 +8,6 @@ export default function App(): JSX.Element {
 		<HashRouter>
 			<Routes>
 				<Route index element={<Index/>}/>
-				<Route path="gg" element="gg"></Route>
 				<Route path="*" element={<NotFound/>}/>
 			</Routes>
 		</HashRouter>

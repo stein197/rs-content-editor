@@ -25,11 +25,15 @@ final class Config {
 		}
 	}
 
-	public function save(): bool {
-		return !!file_put_contents($this->path, json_encode($this->data, JSON_PRETTY_PRINT));
-	}
-
 	public function __get(string $name): mixed {
 		return $this->data->{$name};
+	}
+
+	public function __set(string $name, mixed $value): void {
+		$this->data->{$name} = $value;
+	}
+
+	public function save(): bool {
+		return !!file_put_contents($this->path, json_encode($this->data, JSON_PRETTY_PRINT));
 	}
 }

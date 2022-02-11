@@ -40,15 +40,15 @@ class Response {
 		return $this->response->getStatusCode() === $status ? $this : $this->with($this->response->withStatus($status));
 	}
 
-	public function redirect(string $path, int $status = Status::MOVED_PERMANENTLY): never {
+	public function redirect(string $path, int $status = Status::MOVED_PERMANENTLY) {
 		$this->header('Location', $path)->status($status)->terminate(TerminateType::REDIRECT);
 	}
 
-	public function notFound(): never {
+	public function notFound() {
 		$this->status(Status::NOT_FOUND)->terminate(TerminateType::NOT_FOUND);
 	}
 
-	public function terminate(int $code = -1): never {
+	public function terminate(int $code = -1) {
 		throw new TerminateException($this, "", $code);
 	}
 

@@ -33,4 +33,7 @@ abstract class Controller {
 		$method = strtolower($request->psr()->getMethod());
 		return in_array(strtoupper($method), HTTP_METHODS) && method_exists($this, $method) ? $this->{$method}($request, $response) : $response;
 	}
+
+	// TODO
+	protected function validate(Request $request, Response $response): Response {}
 }

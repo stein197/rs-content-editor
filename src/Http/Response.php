@@ -10,10 +10,6 @@ use function App\resolvePath;
 
 class Response {
 
-	public const TYPE_REDIRECT = 0;
-	public const TYPE_NOT_FOUND = 1;
-
-	private int $type = -1;
 	private array $cookie = [];
 	
 	public function __construct(private ResponseInterface $response) {}
@@ -44,18 +40,16 @@ class Response {
 		return $this->response->getStatusCode() === $status ? $this : $this->with($this->response->withStatus($status));
 	}
 
-	public function redirect(string $path, int $status = Status::MOVED_PERMANENTLY): self {
-		$this->type = self::TYPE_REDIRECT;
-		return $this->header('Location', $path)->status($status)->terminate();
+	public function redirect(string $path, int $status = Status::MOVED_PERMANENTLY): never {
+		$this->header('Location', $path)->status($status)->terminate(TerminateType::REDIRECT);
 	}
 
-	public function notFound(): self {
-		$this->type = self::TYPE_NOT_FOUND;
-		return $this->status(Status::NOT_FOUND);
+	public function notFound(): never {
+		$this->status(Status::NOT_FOUND)->terminate(TerminateType::NOT_FOUND);
 	}
 
-	public function terminate(): never {
-		throw new TerminateException($this);
+	public function terminate(int $code = -1): never {
+		throw new TerminateException($this, "", $code);
 	}
 
 	public function cookie(string $key, ?string $value = null, int $expires = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httpOnly = false): self {
@@ -89,10 +83,6 @@ class Response {
 
 	public function psr(): ResponseInterface {
 		return $this->response;
-	}
-
-	public function getType(): int {
-		return $this->type;
 	}
 
 	private function with(ResponseInterface $response): self {

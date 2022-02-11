@@ -44,23 +44,31 @@ class CheckInstall extends Controller {
 	public function handle(Request $request, Response $response): Response {
 		foreach (self::REQUIRED_PROPERTIES as $prop)
 			if ($this->app->config()->db?->{$prop} === null)
-				return $response->view('form', [
-					'fields' => self::FORM_FIELDS,
-					'button' => 'Подключиться и установить',
-					'action' => route('install')
-				])->{$request->path() === '/' ? 'terminate' : 'redirect'}('/');
+				if ($request->path() === '/')
+					return $response->view('form', self::createViewVars())->terminate();
+				else
+					return $response->view('form', self::createViewVars())->redirect('/');
 		try {
 			$this->app->container()->get(mysqli::class);
 		} catch (mysqli_sql_exception $ex) {
-			return $response->view('form', [
-				'error' => [
-					'message' => "Не удалось подключиться к базе данных: {$ex->getMessage()}"
-				],
-				'fields' => self::FORM_FIELDS,
-				'button' => 'Подключиться и установить',
-				'action' => route('install')
-			])->{$request->path() === '/' ? 'terminate' : 'redirect'}('/');
+			if ($request->path() === '/')
+				return $response->view('form', self::createViewVars("Не удалось подключиться к базе данных: {$ex->getMessage()}"))->terminate();
+			else
+				return $response->view('form', self::createViewVars("Не удалось подключиться к базе данных: {$ex->getMessage()}"))->redirect('/');
 		}
 		return $response;
+	}
+
+	private static function createViewVars(?string $errorMessage = null): array {
+		$result = [
+			'fields' => self::FORM_FIELDS,
+			'button' => 'Подключиться и установить',
+			'action' => route('install')
+		];
+		if ($errorMessage)
+			$result['error'] = [
+				'message' => $errorMessage
+			];
+		return $result;
 	}
 }

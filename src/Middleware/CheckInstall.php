@@ -7,43 +7,14 @@ use mysqli_sql_exception;
 use App\Http\Request;
 use App\Http\Response;
 use App\Controller;
+use App\Database;
 use function App\route;
 
 class CheckInstall extends Controller {
 
-	private const REQUIRED_PROPERTIES = [
-		'host', 'user', 'password', 'name'
-	];
-
-	private const FORM_FIELDS = [
-		[
-			'label' => 'Хост',
-			'name' => 'db[host]',
-			'default' => 'localhost',
-			'required' => true
-		],
-		[
-			'label' => 'Пользователь',
-			'name' => 'db[user]',
-			'default' => 'root',
-			'required' => true
-		],
-		[
-			'label' => 'Пароль',
-			'name' => 'db[password]',
-			'type' => 'password',
-			'required' => true
-		],
-		[
-			'label' => 'Имя базы данных',
-			'name' => 'db[name]',
-			'required' => true
-		]
-	];
-
 	public function handle(Request $request, Response $response): Response {
-		foreach (self::REQUIRED_PROPERTIES as $prop)
-			if ($this->app->config()->db?->{$prop} === null)
+		foreach (Database::CREDENTIALS_CONFIG as $prop)
+			if ($this->app->config()->db?->{$prop['name']} === null)
 				if ($request->path() === '/')
 					return $response->view('form', self::createViewVars())->terminate();
 				else
@@ -61,7 +32,7 @@ class CheckInstall extends Controller {
 
 	private static function createViewVars(?string $errorMessage = null): array {
 		$result = [
-			'fields' => self::FORM_FIELDS,
+			'fields' => Database::CREDENTIALS_CONFIG,
 			'button' => 'Подключиться и установить',
 			'action' => route('install')
 		];

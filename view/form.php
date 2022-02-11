@@ -12,7 +12,7 @@
 							<? foreach ($this->vars->fields as $field): ?>
 								<div class="form-group mb-2">
 									<p class="fw-bold mb-1"><?= $field->label ?></p>
-									<input type="<?= $field->type ?? 'text' ?>" <?= $field->required ? 'required' : '' ?> class="form-control" placeholder="<?= $field->label ?>" name="<?= $field->name ?>" value="<?= $field->default ?>"/>
+									<input type="<?= $field->type ?? 'text' ?>" <?= $field->required ? 'required' : '' ?> class="form-control" placeholder="<?= $field->label ?>" name="<?= $field->formName ?>" value="<?= $field->default ?>"/>
 								</div>
 							<? endforeach ?>
 							<button class="btn btn-primary w-100"><?= $this->vars->button ?? 'Далее' ?></button>

@@ -12,10 +12,12 @@ class Auth extends Controller {
 	public function handle(Request $request, Response $response): Response {
 		if ($this->app->session()->user)
 			return $response;
-		return $response->view('form.auth', [
-			'button' => 'Войти',
-			'title' => 'Авторизация',
-			'action' => route('login')
-		])->terminate();
+		if ($request->path() === '/')
+			return $response->view('form.auth', [
+				'button' => 'Войти',
+				'title' => 'Авторизация',
+				'action' => route('login')
+			])->terminate();
+		return $response->redirect('/');
 	}
 }

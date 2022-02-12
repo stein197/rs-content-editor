@@ -8,7 +8,7 @@ use App\Http\Response;
 
 class Logout extends Controller {
 
-	public function handle(Request $request, Response $response): Response {
+	public function post(Request $request, Response $response): Response {
 		if ($this->app->session()->user)
 			$this->logout();
 		return $response->redirect('/');

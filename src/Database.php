@@ -6,6 +6,7 @@ use stdClass;
 use mysqli;
 use function password_hash;
 use const PASSWORD_DEFAULT;
+use function is_numeric;
 
 final class Database {
 
@@ -31,6 +32,9 @@ final class Database {
 		$result = $this->mysqli->query("SELECT * FROM `users` WHERE `name` = '{$this->escape($name)}'");
 		$user = $result->fetch_object();
 		$result->free();
+		if ($user)
+			foreach ($user as $key => &$value)
+				$value = is_numeric($value) ? +$value : $value;
 		return $user ?: null;
 	}
 

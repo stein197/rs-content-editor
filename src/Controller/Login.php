@@ -10,7 +10,6 @@ use function password_verify;
 
 class Login extends Controller {
 
-	// TODO
 	public function handle(Request $request, Response $response): Response {
 		if (!$request->post()->user)
 			return $response->view('form.auth', [

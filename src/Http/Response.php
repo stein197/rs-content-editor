@@ -1,6 +1,7 @@
 <?php
 namespace App\Http;
 
+use stdClass;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ResponseInterface;
 use App\Http\TerminateException;
@@ -16,7 +17,7 @@ class Response {
 	
 	public function __construct(private ResponseInterface $response) {}
 
-	public function json(array $data): self {
+	public function json(array | stdClass $data): self {
 		return $this->header('Content-Type', 'application/json')->body(json_encode($data));
 	}
 

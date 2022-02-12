@@ -4,3 +4,29 @@ CREATE TABLE IF NOT EXISTS users (
 	password TINYTEXT NOT NULL,
 	admin TINYINT NOT NULL DEFAULT 0
 ) Engine = InnoDB;
+
+CREATE TABLE IF NOT EXISTS entity_props (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	name TINYTEXT NOT NULL,
+	type ENUM('boolean', 'number', 'string', 'date', 'file') NOT NULL DEFAULT 'string',
+	format TINYTEXT NULL,
+	required TINYINT NOT NULL DEFAULT 0
+) Engine = InnoDB;
+
+CREATE TABLE IF NOT EXISTS entity_types (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	has_id TINYINT NOT NULL DEFAULT 1,
+	increment_from INT UNSIGNED NOT NULL DEFAULT 1,
+	parent INT UNSIGNED NOT NULL DEFAULT 0,
+	name TINYTEXT NOT NULL,
+	properties JSON NULL,
+	store_in_parent TINYINT NOT NULL DEFAULT 1
+) Engine = InnoDB;
+
+CREATE TABLE IF NOT EXISTS entity_types_props (
+	property_id INT UNSIGNED NOT NULL,
+	type_id INT UNSIGNED NOT NULL,
+	FOREIGN KEY (property_id) REFERENCES entity_props(id) ON DELETE CASCADE,
+	FOREIGN KEY (type_id) REFERENCES entity_types(id) ON DELETE CASCADE,
+	INDEX id (property_id, type_id)
+) Engine = InnoDB;

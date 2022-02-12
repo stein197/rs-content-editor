@@ -1,31 +1,62 @@
 import React from "react";
-import {Table} from "react-bootstrap";
+import {Table, Button} from "react-bootstrap";
+import Foreach from "view/flow/Foreach";
 
+// TODO: Replace actions stubs
 export default function DataTable(props: DataTableProps): JSX.Element | null {
 	const columnsNames = props.data.length ? Object.keys(props.data[0]) : null;
+	const columnActions = props.actions?.filter(action => action !== "create") || [];
+	const hasColumnActions = columnActions.length > 0;
 	return columnsNames && (
 		<Table striped bordered hover className="m-0">
 			<thead>
 				<tr>
-					{columnsNames.map(name => (
-						<th key={name}>{name}</th>
-					))}
+					<Foreach items={columnsNames}>
+						{React.useCallback(item => (
+							<th key={item}>{item}</th>
+						), [])}
+					</Foreach>
+					{hasColumnActions && (
+						<th>Действия</th>
+					)}
 				</tr>
 			</thead>
 			<tbody>
-				{props.data.map(item => (
-					<tr key={item.id}>
-						{columnsNames.map(name => (
-							<td key={name}>{item[name]}</td>
-						))}
-					</tr>
-				))}
+				<Foreach items={props.data}>
+					{React.useCallback(item => (
+						<tr key={item.id}>
+							<Foreach items={columnsNames}>
+								{React.useCallback(colName => (
+									<td key={colName}>{item[colName]}</td>
+								), [])}
+							</Foreach>
+							{hasColumnActions && (
+								<td>
+									<Foreach items={columnActions}>
+										{React.useCallback(action => (
+											<a href="#">{action}</a>
+										), [])}
+									</Foreach>
+								</td>
+							)}
+						</tr>
+					), [])}
+				</Foreach>
 			</tbody>
+			{props.actions?.includes("create") && (
+				<tfoot>
+					<tr>
+						<td colSpan={columnsNames.length + +hasColumnActions}>
+							<Button className="w-100">Создать</Button>
+						</td>
+					</tr>
+				</tfoot>
+			)}
 		</Table>
 	);
 }
 
 type DataTableProps = {
 	data: any[];
-	actions?: ("delete")[];
+	actions?: ("delete" | "create")[];
 }

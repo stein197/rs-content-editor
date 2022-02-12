@@ -9,6 +9,7 @@ use App\Middleware\Minifier;
 use App\Controller\Install;
 use App\Controller\Index;
 use App\Controller\Login;
+use App\Controller\Logout;
 use App\Routing\Builder;
 use function App\app;
 
@@ -22,5 +23,6 @@ return function (Builder $b) {
 		});
 		$b->post('/install/', Install::class)->name('install');
 		$b->post('/login/', Login::class)->name('login');
+		$b->get('/logout/', Logout::class)->name('logout');
 	})->finally(str_starts_with(app()->config()->mode ?? "production", "d") ? Prettifier::class : Minifier::class);
 };

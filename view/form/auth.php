@@ -8,7 +8,6 @@
 		[
 			'label' => 'Имя',
 			'name' => 'user[name]',
-			'default' => 'admin',
 			'required' => true
 		],
 		[

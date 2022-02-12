@@ -5,12 +5,7 @@ import NotFound from "view/page/NotFound";
 
 export default function App(): JSX.Element {
 	return window.location.pathname === "/" ? (
-		<HashRouter>
-			<Routes>
-				<Route index element={<Index/>}/>
-				<Route path="*" element={<NotFound/>}/>
-			</Routes>
-		</HashRouter>
+		<Index/>
 	) : (
 		<NotFound/>
 	);

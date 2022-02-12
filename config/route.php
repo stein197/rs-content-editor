@@ -7,6 +7,7 @@ use App\Middleware\Verification\Auth;
 use App\Middleware\Prettifier;
 use App\Middleware\Minifier;
 use App\Controller\Api\User;
+use App\Controller\Api\Users;
 use App\Controller\Install;
 use App\Controller\Index;
 use App\Controller\Login;
@@ -19,6 +20,7 @@ return function (Builder $b) {
 		$b->before(Installation::class, Connection::class, AdminUser::class, Auth::class)->group('/', function (Builder $b): void {
 			$b->group('/api/', function (Builder $b): void {
 				$b->get('/user/', User::class);
+				$b->get('/users/', Users::class);
 			});
 			$b->get('/', Index::class);
 		});

@@ -1,5 +1,6 @@
 enum URL {
-	User = "/api/user/"
+	User = "/api/user/",
+	Users = "/api/users/"
 }
 
 export default URL;

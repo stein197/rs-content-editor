@@ -7,6 +7,7 @@ use mysqli;
 use function password_hash;
 use const PASSWORD_DEFAULT;
 use function is_numeric;
+use const MYSQLI_ASSOC;
 
 final class Database {
 
@@ -26,6 +27,13 @@ final class Database {
 		$amount = sizeof($result->fetch_all());
 		$result->free();
 		return $amount > 0;
+	}
+
+	public function getUsers(): array {
+		$result = $this->mysqli->query('SELECT * FROM `users`');
+		$list = $result->fetch_all(MYSQLI_ASSOC);
+		$result->free();
+		return $list;
 	}
 
 	public function getUserByName(string $name): ?stdClass {

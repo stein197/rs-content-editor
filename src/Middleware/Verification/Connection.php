@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middleware;
+namespace App\Middleware\Verification;
 
 use mysqli;
 use mysqli_sql_exception;
@@ -8,7 +8,7 @@ use App\Controller;
 use App\Http\Request;
 use App\Http\Response;
 
-final class CheckConnection extends Controller {
+final class Connection extends Controller {
 
 	public function handle(Request $request, Response $response): Response {
 		try {

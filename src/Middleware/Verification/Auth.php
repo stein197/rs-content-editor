@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Middleware;
+namespace App\Middleware\Verification;
 
 use App\Controller;
 use App\Http\Request;
 use App\Http\Response;
 use function App\route;
 
-class CheckAuth extends Controller {
+class Auth extends Controller {
 
 	// TODO
 	public function handle(Request $request, Response $response): Response {

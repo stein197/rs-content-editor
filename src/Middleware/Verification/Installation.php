@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Middleware;
+namespace App\Middleware\Verification;
 
 use App\Controller;
 use App\Http\Request;
 use App\Http\Response;
 
-class CheckInstallation extends Controller {
+class Installation extends Controller {
 
 	public function handle(Request $request, Response $response): Response {
 		if ($this->app->config()->installed)

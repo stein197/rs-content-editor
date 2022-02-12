@@ -2,6 +2,7 @@
 
 namespace App;
 
+use stdClass;
 use mysqli;
 use function password_hash;
 use const PASSWORD_DEFAULT;
@@ -24,6 +25,13 @@ final class Database {
 		$amount = sizeof($result->fetch_all());
 		$result->free();
 		return $amount > 0;
+	}
+
+	public function getUserByName(string $name): ?stdClass {
+		$result = $this->mysqli->query("SELECT * FROM `users` WHERE `name` = '{$this->escape($name)}'");
+		$user = $result->fetch_object();
+		$result->free();
+		return $user ?: null;
 	}
 
 	public function escape(string $string): string {

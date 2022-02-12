@@ -11,6 +11,8 @@ class Auth extends Controller {
 
 	// TODO
 	public function handle(Request $request, Response $response): Response {
+		if ($this->app->session()->user)
+			return $response;
 		return $response->view('form.auth', [
 			'button' => 'Войти',
 			'title' => 'Авторизация',

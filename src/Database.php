@@ -3,6 +3,8 @@
 namespace App;
 
 use mysqli;
+use function password_hash;
+use const PASSWORD_DEFAULT;
 
 final class Database {
 
@@ -12,8 +14,19 @@ final class Database {
 		return $this->mysqli;
 	}
 
-	// TODO
+	public function createAdminUser(string $name, string $password): void {
+		$pwHash = password_hash($password, PASSWORD_DEFAULT);
+		$this->mysqli->query("INSERT INTO `users` (`name`, `password`, `admin`) VALUES ('{$this->escape($name)}', '{$pwHash}', 1)");
+	}
+
 	public function hasAdminUser(): bool {
-		return false;
+		$result = $this->mysqli->query('SELECT * FROM `users` WHERE `admin`');
+		$amount = sizeof($result->fetch_all());
+		$result->free();
+		return $amount > 0;
+	}
+
+	public function escape(string $string): string {
+		return $this->mysqli->real_escape_string($string);
 	}
 }

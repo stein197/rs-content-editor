@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import {Button, Form, Card, Modal} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import Fetch from "view/Fetch";
@@ -15,7 +15,21 @@ export default function Header(): JSX.Element {
 	const onExportClick = React.useCallback(() => {
 
 	}, []);
-	
+	const onFileUpload = (e: React.SyntheticEvent) => {
+		const reader = new FileReader();
+		const event = e.nativeEvent as unknown as ChangeEvent;
+		const file = (event!.target as HTMLInputElement)!.files![0];
+		reader.onload = () => {
+			fetch(URL.Import, {
+				method: "POST",
+				body: reader.result
+			}).then(() => {
+				console.log("LOADED");
+			});
+		}
+		reader.readAsText(file);
+	}
+
 	return (
 		<>
 			<Modal show={importVisible}>
@@ -26,7 +40,7 @@ export default function Header(): JSX.Element {
 				<Modal.Footer>
 					<Button variant="primary">
 						<label>
-							<input type="file" style={{display: "none"}}/>
+							<input type="file" style={{display: "none"}} onChange={onFileUpload} accept=".json"/>
 							<span>Продолжить</span>
 						</label>
 					</Button>
@@ -56,7 +70,6 @@ export default function Header(): JSX.Element {
 					</header>
 				), [])}
 			</Fetch>
-
 		</>
 	);
 }

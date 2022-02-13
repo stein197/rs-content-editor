@@ -8,6 +8,8 @@ use App\Middleware\Prettifier;
 use App\Middleware\Minifier;
 use App\Controller\Api\User;
 use App\Controller\Api\Users;
+use App\Controller\Import;
+use App\Controller\Export;
 use App\Controller\Install;
 use App\Controller\Index;
 use App\Controller\Login;
@@ -26,6 +28,8 @@ return function (Builder $b) {
 		});
 		$b->post('/install/', Install::class)->name('install');
 		$b->post('/login/', Login::class)->name('login');
-		$b->post('/logout/', Logout::class)->name('logout');
+		$b->post('/logout/', Logout::class);
+		$b->post('/import/', Import::class);
+		$b->get('/export/', Export::class);
 	})->finally(str_starts_with(app()->config()->mode ?? "production", "d") ? Prettifier::class : Minifier::class);
 };

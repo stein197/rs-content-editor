@@ -18,6 +18,7 @@ class Handler {
 	public function __construct(private $routeInfo) {}
 
 	public function handle(Request $request): Response {
+		$request->setParams($this->routeInfo[2]);
 		/** @var Response */
 		$response = container()->make(Response::class);
 		switch ($this->routeInfo[0]) {

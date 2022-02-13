@@ -8,7 +8,7 @@ use function App\array2object;
 
 class Request {
 
-	private array $params;
+	private ?array $params = null;
 	private stdClass $get;
 	private stdClass $post;
 	private string $path;

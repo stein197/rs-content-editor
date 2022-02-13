@@ -32,7 +32,7 @@ export default function Header(): JSX.Element {
 
 	return (
 		<>
-			<Modal show={importVisible}>
+			<Modal show={importVisible} onHide={onModalCloseClick}>
 				<Modal.Header closeButton>
 					<Modal.Title>Импорт данных</Modal.Title>
 				</Modal.Header>

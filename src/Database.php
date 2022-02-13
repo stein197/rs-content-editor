@@ -55,6 +55,7 @@ final class Database {
 		$data = $result->fetch_all(MYSQLI_ASSOC);
 		foreach ($data as $row)
 			$this->mysqli->query("DROP TABLE `e_{$row['id']}`");
+		$this->mysqli->query('TRUNCATE TABLE `entity_types_props`');
 		$this->mysqli->query('TRUNCATE TABLE `entity_types`');
 		$this->mysqli->query('TRUNCATE TABLE `entity_props`');
 		$result->free();

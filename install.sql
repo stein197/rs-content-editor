@@ -19,14 +19,14 @@ CREATE TABLE IF NOT EXISTS entity_types (
 	increment_from INT UNSIGNED NOT NULL DEFAULT 1,
 	parent INT UNSIGNED NOT NULL DEFAULT 0,
 	name TINYTEXT NOT NULL,
-	properties JSON NULL,
+	properties JSON NULL DEFAULT NULL,
 	store_in_parent TINYINT NOT NULL DEFAULT 1
 ) Engine = InnoDB;
 
 CREATE TABLE IF NOT EXISTS entity_types_props (
 	property_id INT UNSIGNED NOT NULL,
 	type_id INT UNSIGNED NOT NULL,
-	FOREIGN KEY (property_id) REFERENCES entity_props(id) ON DELETE CASCADE,
-	FOREIGN KEY (type_id) REFERENCES entity_types(id) ON DELETE CASCADE,
+	-- FOREIGN KEY (property_id) REFERENCES entity_props(id) ON DELETE CASCADE,
+	-- FOREIGN KEY (type_id) REFERENCES entity_types(id) ON DELETE CASCADE,
 	INDEX id (property_id, type_id)
 ) Engine = InnoDB;

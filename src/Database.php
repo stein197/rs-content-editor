@@ -49,4 +49,14 @@ final class Database {
 	public function escape(string $string): string {
 		return $this->mysqli->real_escape_string($string);
 	}
+
+	public function truncateData(): void {
+		$result = $this->mysqli->query('SELECT `id` FROM `entity_types`');
+		$data = $result->fetch_all(MYSQLI_ASSOC);
+		foreach ($data as $row)
+			$this->mysqli->query("DROP TABLE `e_{$row['id']}`");
+		$this->mysqli->query('TRUNCATE TABLE `entity_types`');
+		$this->mysqli->query('TRUNCATE TABLE `entity_props`');
+		$result->free();
+	}
 }

@@ -4,8 +4,10 @@ namespace App\Editor;
 
 use stdClass;
 use function App\app;
+use function App\array2object;
 use function json_encode;
 use function json_decode;
+use const MYSQLI_ASSOC;
 
 final class Type {
 
@@ -45,12 +47,10 @@ final class Type {
 		return $this->properties;
 	}
 
-	// TODO
 	public function getParent(): ?self {
 		return $this->parentID === null ? null : $this->parent = self::get($this->parentID);
 	}
 
-	// TODO
 	public function save(): void {
 		if ($this->id === null) {
 			$name = app()->db()->escape($this->name);
@@ -72,19 +72,28 @@ final class Type {
 		}
 	}
 
-	// TODO
 	public static function get(int $id): ?self {
 		$result = app()->db()->mysqli()->query("SELECT * FROM `entity_types` WHERE `id` = {$id}");
 		$data = $result->fetch_object();
 		$result->free();
-		if ($data) {
-			$type = new self($result->name);
-			$type->id = $id;
-			$type->properties = json_decode($result->properties, false);
-			$type->parentID = (int) $result->parent;
-			return $type;
-		} else {
-			return null;
-		}
+		return $data ? self::fromRecord($data) : null;
+	}
+
+	public static function getByParentID(int $id): array {
+		$result = app()->db()->mysqli()->query("SELECT * FROM `entity_types` WHERE `parent` = {$id}");
+		$data = [];
+		while ($row = $result->fetch_object())
+			$data[] = self::fromRecord($row);
+		$result->free();
+		return $data;
+	}
+
+	private static function fromRecord(array | stdClass $data): self {
+		$data = $data instanceof stdClass ? $data : array2object($data);
+		$result = new self($data->name);
+		$result->id = $data->id;
+		$result->properties = json_decode($data->properties);
+		$result->parentID = (int) $result->parent;
+		return $result;
 	}
 }

@@ -8,6 +8,7 @@ use App\Middleware\Prettifier;
 use App\Middleware\Minifier;
 use App\Controller\Api\User;
 use App\Controller\Api\Users;
+use App\Controller\Api\Types;
 use App\Controller\Import;
 use App\Controller\Export;
 use App\Controller\Install;
@@ -23,6 +24,7 @@ return function (Builder $b) {
 			$b->group('/api/', function (Builder $b): void {
 				$b->get('/user/', User::class);
 				$b->get('/users/', Users::class);
+				$b->get('/types/[{id:\d+}/]', Types::class);
 			});
 			$b->get('/', Index::class);
 		});

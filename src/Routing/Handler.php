@@ -4,7 +4,6 @@ namespace App\Routing;
 
 use Exception;
 use FastRoute\Dispatcher;
-use App\Controller\HtmlStatic;
 use App\Http\Request;
 use App\Http\Response;
 use App\Http\Status;

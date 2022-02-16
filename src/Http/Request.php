@@ -51,7 +51,7 @@ class Request {
 		return $this->request;
 	}
 
-	public function setParams(array $params): void {
+	public function setParams(?array $params): void {
 		if ($this->params === null)
 			$this->params = $params;
 	}

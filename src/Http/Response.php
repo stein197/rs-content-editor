@@ -17,7 +17,7 @@ class Response {
 	
 	public function __construct(private ResponseInterface $response) {}
 
-	public function json(array | stdClass $data): self {
+	public function json($data): self {
 		return $this->header('Content-Type', 'application/json')->body(json_encode($data));
 	}
 

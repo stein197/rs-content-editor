@@ -1,5 +1,6 @@
 import React from "react";
 import {ListGroup} from "react-bootstrap";
+import { Link } from "react-router-dom";
 import Fetch from "view/Fetch";
 import Foreach from "view/flow/Foreach";
 
@@ -10,7 +11,7 @@ export default function TypeMenuItem(props: TypeMenuItemProps): JSX.Element {
 				<Foreach items={data}>
 					{(item: any) => (
 						<ListGroup.Item key={item.id}>
-							<a href={item.id}>{item.name}</a>
+							<Link to={`/${item.id}/`}>{item.name}</Link>
 							<TypeMenuItem id={item.id}/>
 						</ListGroup.Item>
 					)}

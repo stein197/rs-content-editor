@@ -9,7 +9,6 @@ use App\Middleware\Minifier;
 use App\Controller\Api\User;
 use App\Controller\Api\Users;
 use App\Controller\Api\Types;
-use App\Controller\Api\Type;
 use App\Controller\Import;
 use App\Controller\Export;
 use App\Controller\Install;
@@ -26,7 +25,6 @@ return function (Builder $b) {
 				$b->get('/user/', User::class);
 				$b->get('/users/', Users::class);
 				$b->get('/types/[{id:\d+}/]', Types::class);
-				$b->get('/type/{id:\d+}/', Type::class);
 			});
 			$b->get('/', Index::class);
 		});

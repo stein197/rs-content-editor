@@ -1,12 +1,12 @@
 <?php
 namespace App\Http;
 
-use stdClass;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ResponseInterface;
 use App\Http\TerminateException;
 use App\View;
 use function basename;
+use function mime_content_type;
 use function App\resolvePath;
 use function App\app;
 use function App\array2object;
@@ -30,9 +30,17 @@ class Response {
 		return $this->header('Content-Type', mime_content_type($path))->body(file_get_contents($path));
 	}
 
-	public function download(string $path, ?string $name = null): self {
+	public function downloadFile(string $path, ?string $name = null): self {
 		$name = $name ?? basename($path);
 		return $this->file(resolvePath($path))->headers([
+			'Content-Type' => 'application/octet-stream',
+			'Content-Transfer-Encoding' => 'Binary',
+			'Content-Disposition' => "attachment; filename=\"{$name}\"",
+		]);
+	}
+
+	public function download(string $name): self {
+		return $this->headers([
 			'Content-Type' => 'application/octet-stream',
 			'Content-Transfer-Encoding' => 'Binary',
 			'Content-Disposition' => "attachment; filename=\"{$name}\"",

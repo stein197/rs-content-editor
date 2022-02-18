@@ -2,6 +2,14 @@
 
 namespace App\Editor;
 
+use LogicException;
+use InvalidArgumentException;
+use Exception;
+use DI\Definition\Exception\InvalidDefinition;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
 use stdClass;
 use function App\app;
 use function App\array2object;
@@ -79,6 +87,19 @@ final class Type {
 		return $data ? self::fromRecord($data) : null;
 	}
 
+	/**
+	 * 
+	 * @param int $id Parent id.
+	 * @return self[]
+	 * @throws LogicException 
+	 * @throws InvalidArgumentException 
+	 * @throws Exception 
+	 * @throws InvalidDefinition 
+	 * @throws DependencyException 
+	 * @throws NotFoundException 
+	 * @throws NotFoundExceptionInterface 
+	 * @throws ContainerExceptionInterface 
+	 */
 	public static function getByParentID(int $id): array {
 		$result = app()->db()->mysqli()->query("SELECT * FROM `entity_types` WHERE `parent` = {$id}");
 		$data = [];

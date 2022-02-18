@@ -3,7 +3,7 @@ import {Card} from "react-bootstrap";
 
 export default function Content(): JSX.Element {
 	return (
-		<Card>
+		<Card className="h-100">
 			<Card.Body></Card.Body>
 		</Card>
 	);

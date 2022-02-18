@@ -4,7 +4,7 @@ import TypeMenuItem from "view/TypeMenuItem";
 
 export default function Sidebar(): JSX.Element {
 	return (
-		<aside>
+		<aside className="h-100">
 			<Card>
 				<Card.Body>
 					<TypeMenuItem id={0}/>

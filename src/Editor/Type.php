@@ -99,6 +99,15 @@ final class Type {
 		return null;
 	}
 
+	/**
+	 * @return Entity[]
+	 */
+	public function getEntities(): array {
+		if ($this->id === null)
+			return [];
+		return Entity::getByType($this);
+	}
+
 	public function save(): void {
 		$mysqli = app()->db()->mysqli();
 		if ($this->id === null) {

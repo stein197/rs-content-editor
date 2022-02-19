@@ -39,6 +39,6 @@ class Prettifier extends Controller {
 	}
 
 	private function prettifyJson(Request $request, Response $response): Response {
-		return $response->body(json_encode(json_decode($response->psr()->getBody()->getContents()), JSON_PRETTY_PRINT));
+		return $response->body(json_encode(json_decode($response->psr()->getBody()->getContents(), false, 512, \JSON_UNESCAPED_UNICODE), JSON_PRETTY_PRINT | \JSON_UNESCAPED_UNICODE));
 	}
 }

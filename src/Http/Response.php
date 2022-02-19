@@ -18,7 +18,7 @@ class Response {
 	public function __construct(private ResponseInterface $response) {}
 
 	public function json($data): self {
-		return $this->header('Content-Type', 'application/json')->body(json_encode($data));
+		return $this->header('Content-Type', 'application/json')->body(json_encode($data, \JSON_UNESCAPED_UNICODE));
 	}
 
 	public function view(string $name, array $data = []): self {

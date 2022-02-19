@@ -34,6 +34,6 @@ class Minifier extends Controller {
 	}
 
 	private function minifyJson(Request $request, Response $response): Response {
-		return $response->body(json_encode(json_decode($response->psr()->getBody()->getContents())));
+		return $response->body(json_encode(json_decode($response->psr()->getBody()->getContents(), false, 512, \JSON_UNESCAPED_UNICODE), \JSON_UNESCAPED_UNICODE));
 	}
 }

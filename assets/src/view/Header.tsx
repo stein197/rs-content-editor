@@ -12,9 +12,6 @@ export default function Header(): JSX.Element {
 	const onModalCloseClick = React.useCallback(() => {
 		setImportVisible(false);
 	}, []);
-	const onExportClick = React.useCallback(() => {
-
-	}, []);
 	const onFileUpload = (e: React.SyntheticEvent) => {
 		const reader = new FileReader();
 		const event = e.nativeEvent as unknown as ChangeEvent;
@@ -56,7 +53,9 @@ export default function Header(): JSX.Element {
 									<Link to="/" className="text-white">Главная</Link>
 								</Button>
 								<Button variant="primary" className="m-1" onClick={onImportClick}>Импорт</Button>
-								<Button variant="primary" className="m-1" onClick={onExportClick}>Экспорт</Button>
+								<Button variant="primary" className="m-1">
+									<a href="/export/" className="text-white">Экспорт</a>
+								</Button>
 								{data.admin > 0 && (
 									<Button variant="primary" className="m-1">
 										<Link to="/users/" className="text-white">Пользователи</Link>

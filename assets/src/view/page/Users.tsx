@@ -1,5 +1,5 @@
 import React from "react";
-import {Container, Row, Col, Card} from "react-bootstrap";
+import {Container, Card} from "react-bootstrap";
 import Header from "view/Header";
 import Fetch from "view/Fetch";
 import DataTable from "view/DataTable";

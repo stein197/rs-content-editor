@@ -4,7 +4,7 @@ import Foreach from "view/flow/Foreach";
 
 // TODO: Replace actions stubs
 export default function DataTable(props: DataTableProps): JSX.Element | null {
-	const columnsNames = props.data.length ? Object.keys(props.data[0]) : null;
+	const columnsNames = props.data && props.data.length ? Object.keys(props.data[0]) : null;
 	const columnActions = props.actions?.filter(action => action !== "create") || [];
 	const hasColumnActions = columnActions.length > 0;
 	return columnsNames && (
@@ -27,14 +27,14 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 						<tr key={item.id}>
 							<Foreach items={columnsNames}>
 								{React.useCallback(colName => (
-									<td key={colName}>{item[colName]}</td>
+									<td key={colName}>{item[colName].toString()}</td>
 								), [])}
 							</Foreach>
 							{hasColumnActions && (
 								<td>
 									<Foreach items={columnActions}>
 										{React.useCallback(action => (
-											<a href="#">{action}</a>
+											<a href="#" key={item.id}>{action}</a>
 										), [])}
 									</Foreach>
 								</td>

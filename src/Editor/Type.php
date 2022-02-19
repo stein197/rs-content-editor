@@ -2,6 +2,7 @@
 
 namespace App\Editor;
 
+use stdClass;
 use LogicException;
 use InvalidArgumentException;
 use Exception;
@@ -10,7 +11,6 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
-use stdClass;
 use function App\app;
 use function App\array2object;
 use function json_encode;
@@ -21,6 +21,8 @@ final class Type {
 
 	private ?int $id = null;
 	private ?stdClass $properties = null;
+	/** @var Prop[] */
+	private array $props = [];
 	private ?self $parent = null;
 	private ?int $parentID = null;
 
@@ -32,6 +34,11 @@ final class Type {
 
 	public function setProperties(stdClass $properties): void {
 		$this->properties = $properties;
+	}
+
+	public function setProperty(string $name, mixed $value): void {
+		$this->properties = $this->properties ?? new stdClass;
+		$this->properties->{$name} = $value;
 	}
 
 	public function setParent(self | int $parent): void {
@@ -51,6 +58,10 @@ final class Type {
 		return $this->name;
 	}
 
+	public function getNameEscaped(): string {
+		return app()->db()->escape($this->name);
+	}
+
 	public function getProperties(): ?stdClass {
 		return $this->properties;
 	}
@@ -59,7 +70,37 @@ final class Type {
 		return $this->parentID === null ? null : $this->parent = self::get($this->parentID);
 	}
 
+	public function addProp(Prop $prop): void {
+		$this->props[] = $prop;
+	}
+
+	public function hasProp(Prop $prop): bool {
+		if ($prop->getID() === null || $this->id === null)
+			return false;
+		$result = app()->db()->mysqli()->query("SELECT * FROM `entity_types_props` WHERE `property_id` = {$prop->getID()} AND `type_id` = {$this->id}");
+		$has = $result->num_rows > 0;
+		$result->free();
+		$result = app()->db()->mysqli()->query("SHOW COLUMNS FROM `e_{$this->id}` LIKE '{$prop->getNameEscaped()}'");
+		$has = $has && $result->num_rows > 0;
+		return $has;
+	}
+
+	/**
+	 * @return Prop[]
+	 */
+	public function getProps(): array {
+		return $this->props;
+	}
+
+	public function getPropByName(string $name): ?Prop {
+		foreach ($this->props as $prop)
+			if ($prop->getName() === $name)
+				return $prop;
+		return null;
+	}
+
 	public function save(): void {
+		$mysqli = app()->db()->mysqli();
 		if ($this->id === null) {
 			$name = app()->db()->escape($this->name);
 			$properties = json_encode($this->properties);
@@ -68,16 +109,37 @@ final class Type {
 			$mysqli = app()->db()->mysqli();
 			$mysqli->query($query);
 			$this->id = (int) $mysqli->insert_id;
-			app()->db()->mysqli()->query("CREATE TABLE `e_{$this->id}` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY) ENGINE = InnoDB");
+			// TODO: id auto_increment and string id
+			// $mysqli->query("CREATE TABLE `e_{$this->id}` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY) ENGINE = InnoDB");
+			$mysqli->query("CREATE TABLE `e_{$this->id}` (`_` TINYINT(1) NULL DEFAULT NULL) ENGINE = InnoDB");
 		} else {
 			$querySet = [
-				'`name` = '.app()->db()->escape($this->name),
-				'`properties` = '.json_encode($this->properties),
-				'`parent` = '.$this->parentID
+				"`name` = '{$this->getNameEscaped()}'",
+				'`properties` = '.($this->properties ? '\''.json_encode($this->properties).'\'' : 'NULL'),
+				'`parent` = '.($this->parentID ?? 0)
 			];
 			$query = 'UPDATE `entity_types` SET '.join(', ', $querySet)." WHERE `id` = {$this->id}";
-			app()->db()->mysqli()->query($query);
+			$mysqli->query($query);
 		}
+		foreach ($this->props as $prop) {
+			$prop->save();
+			$mysqli->query("INSERT IGNORE INTO `entity_types_props` (`property_id`, `type_id`) VALUES ({$prop->getID()}, {$this->id})");
+			try {
+				$query = "ALTER TABLE `e_{$this->id}` ".($this->hasProp($prop) ? 'MODIFY' : 'ADD')." `{$prop->getNameEscaped()}` {$prop->getTypeAsSQL()} {$prop->getRequiredAsSQL()}";
+				$mysqli->query($query);
+			} catch (\Exception $ex) {
+				$a = 1;
+			}
+		}
+	}
+
+	private function fetchProps(): void {
+		if ($this->id === null)
+			return;
+		$result = app()->db()->mysqli()->query("SELECT * FROM `entity_types_props` WHERE `type_id` = {$this->id}");
+		foreach ($result->fetch_all(MYSQLI_ASSOC) as $row)
+			$this->props[] = Prop::getByID(+$row['property_id']);
+		$result->free();
 	}
 
 	public static function get(int $id): ?self {
@@ -88,7 +150,6 @@ final class Type {
 	}
 
 	/**
-	 * 
 	 * @param int $id Parent id.
 	 * @return self[]
 	 * @throws LogicException 
@@ -115,6 +176,7 @@ final class Type {
 		$result->id = $data->id;
 		$result->properties = json_decode($data->properties);
 		$result->parentID = (int) $result->parent;
+		$result->fetchProps();
 		return $result;
 	}
 }

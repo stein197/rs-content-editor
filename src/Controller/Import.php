@@ -29,6 +29,7 @@ class Import extends Controller {
 			])->status(Status::BAD_REQUEST);
 		}
 		unset($data->newGifts); // TODO: Временно исключаем
+		$this->app->db()->mysqli()->query('SET sql_mode=\'NO_AUTO_VALUE_ON_ZERO\'');
 		foreach ($data as $typeName => $typeDescriptor)
 			$this->createType($typeName, $typeDescriptor);
 		return $response->json([

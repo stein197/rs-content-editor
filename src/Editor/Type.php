@@ -120,8 +120,8 @@ final class Type {
 			$mysqli->query($query);
 			$this->id = (int) $mysqli->insert_id;
 			// TODO: id auto_increment and string id
-			// $mysqli->query("CREATE TABLE `e_{$this->id}` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY) ENGINE = InnoDB");
-			$mysqli->query("CREATE TABLE `e_{$this->id}` (`_` TINYINT(1) NULL DEFAULT NULL) ENGINE = InnoDB");
+			$mysqli->query("CREATE TABLE `e_{$this->id}` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY) ENGINE = InnoDB");
+			// $mysqli->query("CREATE TABLE `e_{$this->id}` (`_` TINYINT(1) NULL DEFAULT NULL) ENGINE = InnoDB");
 		} else {
 			$querySet = [
 				"`name` = '{$this->getNameEscaped()}'",
@@ -135,8 +135,29 @@ final class Type {
 			$prop->save();
 			$mysqli->query("INSERT IGNORE INTO `entity_types_props` (`property_id`, `type_id`) VALUES ({$prop->getID()}, {$this->id})");
 			try {
-				$query = "ALTER TABLE `e_{$this->id}` ".($this->hasProp($prop) ? 'MODIFY' : 'ADD')." `{$prop->getNameEscaped()}` {$prop->getTypeAsSQL()} {$prop->getRequiredAsSQL()}";
-				$mysqli->query($query);
+				if ($prop->getName() === "id") {
+					$queryRs = $mysqli->query("SHOW COLUMNS FROM `e_{$this->id}` LIKE 'id'");
+					$idRow = $queryRs->fetch_object();
+					$queryRs->free();
+					if ($prop->getType() === Prop::TYPE_NUMBER) {
+						if (str_starts_with($idRow->Type, 'varchar')) {
+							$mysqli->query("ALTER TABLE `e_{$this->id}` MODIFY COLUMN `id` INT UNSIGNED NOT NULL");
+							$mysqli->query("DROP INDEX `PRIMARY` ON `e_{$this->id}`");
+							$mysqli->query("ALTER TABLE `e_{$this->id}` MODIFY COLUMN `id` INT UNSIGNED NOT NULL AUTO_INCREMENT");
+							$mysqli->query("ALTER TABLE `e_{$this->id}` ADD PRIMARY KEY (`id`)");
+						}
+					} else {
+						if (str_starts_with($idRow->Type, 'int')) {
+							$mysqli->query("ALTER TABLE `e_{$this->id}` MODIFY COLUMN `id` INT");
+							$mysqli->query("DROP INDEX `PRIMARY` ON `e_{$this->id}`");
+							$mysqli->query("ALTER TABLE `e_{$this->id}` MODIFY COLUMN `id` VARCHAR(64) NOT NULL");
+							$mysqli->query("ALTER TABLE `e_{$this->id}` ADD PRIMARY KEY (`id`)");
+						}
+					}
+				} else {
+					$query = "ALTER TABLE `e_{$this->id}` ".($this->hasProp($prop) ? 'MODIFY' : 'ADD')." `{$prop->getNameEscaped()}` {$prop->getTypeAsSQL()} {$prop->getRequiredAsSQL()}";
+					$mysqli->query($query);
+				}
 			} catch (\Exception $ex) {
 				$a = 1;
 			}

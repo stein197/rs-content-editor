@@ -20,7 +20,7 @@ class Import extends Controller {
 	public function post(Request $request, Response $response): Response {
 		$this->app->db()->truncateData();
 		try {
-			$data = json_decode($request->psr()->getBody()->getContents(), false, JSON_THROW_ON_ERROR);
+			$data = json_decode($request->psr()->getBody()->getContents(), false, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
 		} catch (JsonException $ex) {
 			return $response->json([
 				'error' => [
@@ -81,7 +81,7 @@ class Import extends Controller {
 					'boolean' => +$entity->{$colName},
 					'integer', 'double', 'float' => $entity->{$colName},
 					'string' => '\''.$this->app->db()->escape($entity->{$colName}).'\'',
-					'array', 'object' => '\''.json_encode($entity->{$colName}).'\'',
+					'array', 'object' => '\''.json_encode($entity->{$colName}, JSON_UNESCAPED_UNICODE).'\'',
 					'NULL' => 'NULL'
 				};
 			}

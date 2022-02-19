@@ -3,6 +3,8 @@ namespace App;
 
 use ParseError;
 use stdClass;
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_UNICODE;
 
 final class Config {
 
@@ -16,7 +18,7 @@ final class Config {
 	 */
 	public function load(): void {
 		if (file_exists($this->path)) {
-			$this->data = json_decode(file_get_contents($this->path));
+			$this->data = json_decode(file_get_contents($this->path), false, 512, JSON_UNESCAPED_UNICODE);
 			if ($this->data === null)
 				throw new ParseError("Failed to parse {$this->path} file");
 		} else {
@@ -26,6 +28,6 @@ final class Config {
 	}
 
 	public function save(): bool {
-		return !!file_put_contents($this->path, json_encode($this->data, JSON_PRETTY_PRINT));
+		return !!file_put_contents($this->path, json_encode($this->data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 	}
 }

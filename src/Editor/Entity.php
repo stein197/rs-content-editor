@@ -4,6 +4,7 @@ namespace App\Editor;
 
 use function App\app;
 use function is_numeric;
+use const JSON_UNESCAPED_UNICODE;
 
 // TODO
 final class Entity {
@@ -32,8 +33,7 @@ final class Entity {
 				$entity->properties[$colName] = match ($prop->getType()) {
 					Prop::TYPE_BOOLEAN => !!+$colValue,
 					Prop::TYPE_NUMBER => +$colValue,
-					Prop::TYPE_JSON => json_decode($colValue, false, 512, \JSON_UNESCAPED_UNICODE),
-					// Prop::TYPE_JSON => json_decode($colValue),
+					Prop::TYPE_JSON => json_decode($colValue, false, 512, JSON_UNESCAPED_UNICODE),
 					default => $colValue
 				};
 			}

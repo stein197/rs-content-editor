@@ -8,13 +8,14 @@ use App\Http\Response;
 use App\Editor\Type;
 use App\Editor\Entity;
 use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_UNICODE;
 
 // TODO
 class Export extends Controller {
 
 	public function get(Request $request, Response $response): Response {
 		$data = self::collectData(0);
-		$json = json_encode($data, JSON_PRETTY_PRINT);
+		$json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 		return $response->body($json)->download('content.json');
 		// return $response->json($data);
 	}

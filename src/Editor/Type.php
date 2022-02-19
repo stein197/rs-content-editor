@@ -16,6 +16,7 @@ use function App\array2object;
 use function json_encode;
 use function json_decode;
 use const MYSQLI_ASSOC;
+use const JSON_UNESCAPED_UNICODE;
 
 final class Type {
 
@@ -112,7 +113,7 @@ final class Type {
 		$mysqli = app()->db()->mysqli();
 		if ($this->id === null) {
 			$name = app()->db()->escape($this->name);
-			$properties = json_encode($this->properties);
+			$properties = json_encode($this->properties, JSON_UNESCAPED_UNICODE);
 			$parent = $this->parentID === null ? 0 : $this->parentID;
 			$query = "INSERT INTO `entity_types` (`name`, `properties`, `parent`) VALUES ('{$name}', '{$properties}', {$parent})";
 			$mysqli = app()->db()->mysqli();
@@ -124,7 +125,7 @@ final class Type {
 		} else {
 			$querySet = [
 				"`name` = '{$this->getNameEscaped()}'",
-				'`properties` = '.($this->properties ? '\''.json_encode($this->properties).'\'' : 'NULL'),
+				'`properties` = '.($this->properties ? '\''.json_encode($this->properties, JSON_UNESCAPED_UNICODE).'\'' : 'NULL'),
 				'`parent` = '.($this->parentID ?? 0)
 			];
 			$query = 'UPDATE `entity_types` SET '.join(', ', $querySet)." WHERE `id` = {$this->id}";
@@ -183,7 +184,7 @@ final class Type {
 		$data = $data instanceof stdClass ? $data : array2object($data);
 		$result = new self($data->name);
 		$result->id = $data->id;
-		$result->properties = json_decode($data->properties);
+		$result->properties = json_decode($data->properties, false, 512, JSON_UNESCAPED_UNICODE);
 		$result->parentID = (int) $result->parent;
 		$result->fetchProps();
 		return $result;

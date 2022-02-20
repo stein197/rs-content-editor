@@ -9,8 +9,9 @@ use App\Middleware\Minifier;
 use App\Controller\Api\User;
 use App\Controller\Api\Users;
 use App\Controller\Api\Types;
-use App\Controller\Api\Type;
+use App\Controller\Api\TypeCRUD;
 use App\Controller\Api\TypeEntities;
+use App\Controller\Api\EntityCRUD;
 use App\Controller\Api\TypeProps;
 use App\Controller\Import;
 use App\Controller\Export;
@@ -25,13 +26,20 @@ return function (Builder $b) {
 	$b->group('/', function (Builder $b): void {
 		$b->before(Installation::class, Connection::class, AdminUser::class, Auth::class)->group('/', function (Builder $b): void {
 			$b->group('/api/', function (Builder $b): void {
-				$b->get('/user/', User::class);
+				$b->group('/user/', function (Builder $b): void {
+					$b->get('/', User::class);
+					$b->post('/', User::class);
+					$b->any('/{id:\d+}/', User::class);
+				});
 				$b->get('/users/', Users::class);
 				$b->get('/types/[{id:\d+}/]', Types::class);
-				$b->group('/type/{id:\d+}/', function (Builder $b): void {
-					$b->get('/', Type::class);
-					$b->get('/entities/', TypeEntities::class);
-					$b->get('/props/', TypeProps::class);
+				$b->group('/type/', function (Builder $b): void {
+					$b->group('/{id:\d+}/', function (Builder $b): void {
+						$b->get('/entities/', TypeEntities::class);
+						$b->get('/props/', TypeProps::class);
+						$b->any('/{entityID:\d+}/', EntityCRUD::class);
+						$b->any('/', TypeCRUD::class);
+					});
 				});
 			});
 			$b->get('/', Index::class);

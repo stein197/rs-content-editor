@@ -7,7 +7,8 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Http\Status;
 
-final class Type extends Controller {
+// TODO
+final class TypeCRUD extends Controller {
 
 	public function get(Request $request, Response $response): Response {
 		$typeID = +$request->param('id');

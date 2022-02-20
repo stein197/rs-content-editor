@@ -20,7 +20,7 @@ export default function Users(): JSX.Element {
 								<Card.Body>
 									<Fetch input={URL.Users}>
 										{(response, data) => (
-											<DataTable data={data} actions={["create", "delete"]}/>
+											<DataTable propsUrl="" data={data} actions={["create", "delete"]}/>
 										)}
 									</Fetch>
 								</Card.Body>

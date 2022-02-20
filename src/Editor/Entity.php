@@ -23,6 +23,10 @@ final class Entity {
 
 	public function __construct() {}
 
+	public function getID(): int | string | null {
+		return $this->id;
+	}
+
 	public function getProperties(): array {
 		return $this->properties;
 	}

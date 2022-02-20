@@ -30,19 +30,19 @@ export default function Type(): JSX.Element {
 												<Tab eventKey="items" title="Данные">
 													<Fetch input={`/api/type/${params.typeID}/entities/`}>
 														{(entitiesResponse, entitiesData) => (
-															<DataTable data={entitiesData} actions={["create", "delete"]}/>
+															<DataTable propsUrl={`/api/type/${params.typeID}/props/`} data={entitiesData} actions={["create", "delete", "edit"]}/>
 														)}
 													</Fetch>
 												</Tab>
 												<Tab eventKey="itemProperties" title="Свойства записей">
 													<Fetch input={`/api/type/${params.typeID}/props/`}>
 														{(propsResponse, propsData) => (
-															<DataTable data={propsData} actions={["create", "delete"]}/>
+															<DataTable propsUrl="" data={propsData} actions={["create", "delete", "edit"]}/>
 														)}
 													</Fetch>
 												</Tab>
 												<Tab eventKey="typeProperties" title="Свойства типа">
-													<DataTable data={typeData.properties ? Object.entries(typeData.properties).map((entry: any) => ({
+													<DataTable propsUrl="" data={typeData.properties ? Object.entries(typeData.properties).map((entry: any) => ({
 														name: entry[0],
 														value: entry[1]
 													})) : []} actions={["create", "delete"]}/>

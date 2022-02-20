@@ -20,6 +20,8 @@ class Login extends Controller {
 				'title' => 'Авторизация',
 				'action' => route('login')
 			])->terminate();
+		if ($this->app->session()->user)
+			return $response->redirect('/');
 		$this->authorize($request, $response);
 		return $response->redirect('/');
 		return $response;

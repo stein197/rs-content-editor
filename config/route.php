@@ -34,11 +34,13 @@ return function (Builder $b) {
 				$b->get('/users/', Users::class);
 				$b->get('/types/[{id:\d+}/]', Types::class);
 				$b->group('/type/', function (Builder $b): void {
+					$b->post('/', TypeCRUD::class);
 					$b->group('/{id:\d+}/', function (Builder $b): void {
+						$b->match(['GET', 'PUT', 'DELETE'], '/', TypeCRUD::class);
+						$b->post('/', EntityCRUD::class);
+						$b->match(['GET', 'PUT', 'DELETE'], '/{entityID:\d+}/', EntityCRUD::class);
 						$b->get('/entities/', TypeEntities::class);
 						$b->get('/props/', TypeProps::class);
-						$b->any('/{entityID:\d+}/', EntityCRUD::class);
-						$b->any('/', TypeCRUD::class);
 					});
 				});
 			});

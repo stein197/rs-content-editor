@@ -89,11 +89,9 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 			<Table striped bordered hover className="m-0">
 				<thead>
 					<tr>
-						<Foreach items={columnsNames}>
-							{React.useCallback(item => (
-								<th key={typeof item === "object" ? JSON.stringify(item) : item}>{typeof item === "object" ? JSON.stringify(item) : item}</th>
-							), [])}
-						</Foreach>
+						{columnsNames.map(item => (
+							<th key={typeof item === "object" ? JSON.stringify(item) : item}>{typeof item === "object" ? JSON.stringify(item) : item}</th>
+						))}
 						{hasColumnActions && (
 							<th>Действия</th>
 						)}

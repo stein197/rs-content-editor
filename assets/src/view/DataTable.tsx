@@ -2,6 +2,7 @@ import React from "react";
 import {Table, Button, Modal, Form} from "react-bootstrap";
 import Foreach from "view/flow/Foreach";
 import Fetch from "view/Fetch";
+import EntityRow from "view/EntityRow";
 
 // TODO: Replace actions stubs
 export default function DataTable(props: DataTableProps): JSX.Element | null {
@@ -16,21 +17,9 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 		// clearData();
 	}, []);
 	// TODO
-	const onDeleteClick = React.useCallback((e: React.SyntheticEvent<HTMLAnchorElement, MouseEvent>) => {
-		e.preventDefault();
-		setModalAction(Action.Delete);
-		setModalVisible(true);
-	}, []);
-	// TODO
 	const onCreateClick = React.useCallback((e) => {
 		e.preventDefault();
 		setModalAction(Action.Create);
-		setModalVisible(true);
-	}, []);
-	// TODO
-	const onEditClick = React.useCallback((e: React.SyntheticEvent<HTMLAnchorElement, MouseEvent>) => {
-		e.preventDefault();
-		setModalAction(Action.Update);
 		setModalVisible(true);
 	}, []);
 	// TODO
@@ -111,29 +100,9 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 					</tr>
 				</thead>
 				<tbody>
-					<Foreach items={props.data}>
-						{React.useCallback(item => (
-							<tr key={item.id}>
-								<Foreach items={columnsNames}>
-									{React.useCallback(colName => (
-										<td key={colName}>{item[colName].toString()}</td>
-									), [])}
-								</Foreach>
-								{hasColumnActions && (
-									<td>
-										<Foreach items={columnActions}>
-											{React.useCallback(action => (
-												<>
-													<a href="" key={item.id} onClick={action == "delete" ? onDeleteClick : (action === "edit" ? onEditClick : undefined)}>{action}</a>
-													<br/>
-												</>
-											), [])}
-										</Foreach>
-									</td>
-								)}
-							</tr>
-						), [])}
-					</Foreach>
+					{props.data.map(item => (
+						<EntityRow crudUrl={props.crudUrl!!} id={item.id} props={item} columns={columnsNames}/>
+					))}
 				</tbody>
 				{props.actions?.includes("create") && (
 					<tfoot>

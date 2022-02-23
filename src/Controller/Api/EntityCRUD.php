@@ -12,7 +12,30 @@ use App\Http\Status;
 // TODO
 final class EntityCRUD extends Controller {
 
-	public function get(Request $request, Response $response): Response {}
+	public function get(Request $request, Response $response): Response {
+		$typeID = +$request->param('id');
+		$entityID = +$request->param('entityID');
+		$type = Type::get($typeID);
+		if (!$type)
+			return $response->status(Status::NOT_FOUND)->json([
+				'error' => [
+					'message' => "Типа с ID {$typeID} не существует"
+				]
+			]);
+		$entity = Entity::get($type, $entityID);
+		if ($entity) {
+			return $response->json(array_merge([
+				'id' => $entity->getID()
+			], $entity->getProperties()));
+		} else {
+			return $response->status(Status::BAD_REQUEST)->json([
+				'error' => [
+					'message' => "Сущности с ID {$entityID} не существует"
+				]
+			]);
+		}
+		return $response->json('OK');
+	}
 
 	public function post(Request $request, Response $response): Response {
 		$typeID = +$request->param('id');

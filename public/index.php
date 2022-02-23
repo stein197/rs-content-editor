@@ -8,6 +8,7 @@ use App\Routing\Router;
 use function App\container;
 
 error_reporting(E_ALL ^ (E_DEPRECATED | E_WARNING));
+ini_set('max_execution_time', 0);
 
 (function (Application $app): void {
 	$app->init();

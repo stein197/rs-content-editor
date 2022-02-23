@@ -17,7 +17,7 @@ final class TypeCRUD extends Controller {
 			'id' => $type->getID(),
 			'name' => $type->getName(),
 			'properties' => $type->getProperties(),
-		]) : $response->status(Status::BAD_REQUEST)->json([
+		]) : $response->status(Status::NOT_FOUND)->json([
 			'error' => [
 				'message' => "Тип с id {$typeID} не существует"
 			]

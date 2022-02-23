@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use stdClass;
-use JsonException;
+use Exception;
 use App\Controller;
 use App\Http\Request;
 use App\Http\Response;
@@ -18,25 +18,25 @@ use const JSON_THROW_ON_ERROR;
 class Import extends Controller {
 
 	public function post(Request $request, Response $response): Response {
-		$this->app->db()->truncateData();
 		try {
 			$data = json_decode($request->psr()->getBody()->getContents(), false, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
-		} catch (JsonException $ex) {
+			$this->app->db()->truncateData();
+			unset($data->newGifts); // TODO: Временно исключаем
+			$this->app->db()->mysqli()->query('SET sql_mode=\'NO_AUTO_VALUE_ON_ZERO\'');
+			foreach ($data as $typeName => $typeDescriptor)
+				$this->createType($typeName, $typeDescriptor);
+			return $response->json([
+				'success' => [
+					'message' => 'Данные импортированы успешно'
+				]
+			]);
+		} catch (Exception $ex) {
 			return $response->json([
 				'error' => [
 					'message' => $ex->getMessage()
 				]
 			])->status(Status::BAD_REQUEST);
 		}
-		unset($data->newGifts); // TODO: Временно исключаем
-		$this->app->db()->mysqli()->query('SET sql_mode=\'NO_AUTO_VALUE_ON_ZERO\'');
-		foreach ($data as $typeName => $typeDescriptor)
-			$this->createType($typeName, $typeDescriptor);
-		return $response->json([
-			'success' => [
-				'message' => 'Данные импортированы успешно'
-			]
-		]);
 	}
 
 	private function createType(string $name, stdClass | array $descriptor, ?Type $parent = null): void {

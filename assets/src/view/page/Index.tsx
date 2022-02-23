@@ -16,7 +16,9 @@ export default function Index(): JSX.Element {
 						<Sidebar></Sidebar>
 					</Col>
 					<Col xs={12} md={8} xl={9}>
-						<Content>Выберите категорию</Content>
+						<Content>
+							<h1 className="text-center">Выберите категорию</h1>
+						</Content>
 					</Col>
 				</Row>
 			</Container>

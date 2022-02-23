@@ -6,11 +6,15 @@ import URL from "API/URL";
 
 export default function Header(): JSX.Element {
 	const [importVisible, setImportVisible] = React.useState(false);
+	const [importResponse, setImportResponse] = React.useState<Response>();
+	const [importData, setImportData] = React.useState<any>();
 	const onImportClick = React.useCallback(() => {
 		setImportVisible(true);
 	}, []);
 	const onModalCloseClick = React.useCallback(() => {
 		setImportVisible(false);
+		setImportResponse(undefined);
+		setImportData(undefined);
 	}, []);
 	const onFileUpload = (e: React.SyntheticEvent) => {
 		const reader = new FileReader();
@@ -20,8 +24,13 @@ export default function Header(): JSX.Element {
 			fetch(URL.Import, {
 				method: "POST",
 				body: reader.result
-			}).then(() => {
-				console.log("LOADED");
+			})
+			.then(r => {
+				setImportResponse(r);
+				return r.json();
+			})
+			.then(data => {
+				setImportData(data);
 			});
 		}
 		reader.readAsText(file);
@@ -33,7 +42,17 @@ export default function Header(): JSX.Element {
 				<Modal.Header closeButton>
 					<Modal.Title>Импорт данных</Modal.Title>
 				</Modal.Header>
-				<Modal.Body>Внимание! При импорте данных, вся база данных будет очищена</Modal.Body>
+				<Modal.Body>
+					{importResponse && importData ? (
+						<Card>
+							<Card.Body>
+								<div className={`alert alert-${importResponse.ok ? "success" : "danger"}`}>{importData.success?.message || importData.error?.message}</div>
+							</Card.Body>
+						</Card>
+					) : (
+						"Внимание! При импорте данных, вся база данных будет очищена"
+					)}
+				</Modal.Body>
 				<Modal.Footer>
 					<Button variant="primary">
 						<label>

@@ -27,7 +27,10 @@ class Export extends Controller {
 				$result[$type->getName()] = (array) $type->getProperties();
 				$result[$type->getName()] = array_merge($result[$type->getName()], self::collectData($type->getID()));
 			} else {
-				$result[$type->getName()] = array_map(fn (Entity $entity): array => array_filter($entity->getProperties(), fn ($val) => $val !== null), $type->getEntities());
+				$result[$type->getName()] = array_merge(
+					array_map(fn (Entity $entity): array => array_filter($entity->getProperties(), fn ($val) => $val !== null), $type->getEntities()),
+					self::collectData($type->getID())
+				);
 			}
 		}
 		return $result;

@@ -35,8 +35,25 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 	}, []);
 	// TODO
 	const onModalActionClick = React.useCallback(e => {
-		
-		onModalCloseClick();
+		switch (modalAction) {
+			// TODO
+			case Action.Create:
+				const data = getModalData();
+				fetch(props.crudUrl!!, {
+					method: "POST",
+					body: JSON.stringify(data)
+				}).then(() => onModalCloseClick());
+				break;
+			// TODO
+			case Action.Read:
+				break;
+			// TODO
+			case Action.Update:
+				break;
+			// TODO
+			case Action.Delete:
+				break;
+		}
 	}, []);
 	
 	return columnsNames && (
@@ -53,18 +70,18 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 							{(response, data) => (
 								<Form>
 									<Table>
-										<tbody>
+										<tbody className="edit">
 											<tr>
 												<td>id</td>
 												<td>
-													<Form.Control placeholder="id"/>
+													<Form.Control placeholder="id" name="id"/>
 												</td>
 											</tr>
 											{data.map((prop: any) => (
 												<tr>
 													<td>{prop.name}</td>
 													<td>
-														<Form.Control/>
+														<Form.Control placeholder={prop.name} name={prop.name}/>
 													</td>
 												</tr>
 											))}
@@ -85,7 +102,7 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 					<tr>
 						<Foreach items={columnsNames}>
 							{React.useCallback(item => (
-								<th key={item}>{item}</th>
+								<th key={typeof item === "object" ? JSON.stringify(item) : item}>{typeof item === "object" ? JSON.stringify(item) : item}</th>
 							), [])}
 						</Foreach>
 						{hasColumnActions && (
@@ -145,6 +162,14 @@ function getActionNameByEnum(action: Action): string {
 	}
 }
 
+function getModalData(): object {
+	const result: any = {};
+	for (const tr of Array.from(document.body.querySelector(".modal-dialog tbody.edit")!.children)) {
+		result[tr.querySelector("input")!.getAttribute("name")!.toString()] = tr.querySelector("input")!.value;
+	}
+	return result;
+}
+
 enum Action {
 	Create,
 	Read,
@@ -156,4 +181,5 @@ type DataTableProps = {
 	data: any[];
 	actions?: ("delete" | "create" | "edit")[];
 	propsUrl: string;
+	crudUrl?: string;
 }

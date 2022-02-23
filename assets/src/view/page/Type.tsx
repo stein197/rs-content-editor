@@ -30,7 +30,7 @@ export default function Type(): JSX.Element {
 												<Tab eventKey="items" title="Данные">
 													<Fetch input={`/api/type/${params.typeID}/entities/`}>
 														{(entitiesResponse, entitiesData) => (
-															<DataTable propsUrl={`/api/type/${params.typeID}/props/`} data={entitiesData} actions={["create", "delete", "edit"]}/>
+															<DataTable crudUrl={`/api/type/${params.typeID}/`} propsUrl={`/api/type/${params.typeID}/props/`} data={entitiesData} actions={["create", "delete", "edit"]}/>
 														)}
 													</Fetch>
 												</Tab>

@@ -8,6 +8,7 @@ use Exception;
 use DI\Definition\Exception\InvalidDefinition;
 use DI\DependencyException;
 use DI\NotFoundException;
+use mysqli;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use function App\app;
@@ -27,12 +28,49 @@ final class Entity {
 		return $this->id;
 	}
 
+	public function setType(Type $type): void {
+		$this->type = $type;
+	}
+
+	public function setProperties(array $properties): void {
+		$this->properties = $properties;
+		unset($this->properties['id']);
+	}
+
 	public function getProperties(): array {
 		return $this->properties;
 	}
 
 	public function delete(): void {
 		app()->db()->mysqli()->query("DELETE FROM `e_{$this->type->getID()}` WHERE `id` = '{$this->id}'");
+	}
+
+	public function save(): void {
+		$mysqli = app()->db()->mysqli();
+		if ($this->id === null) {
+			$insertClause = [];
+			$valueClause = [];
+			foreach ($this->properties as $propName => $propValue) {
+				$insertClause[] = "`{$propName}`";
+				$valueClause[] = match (gettype($propValue)) {
+					'boolean', 'integer', 'double' => +$propValue,
+					default => $propValue ? '\''.app()->db()->escape($propValue).'\'' : 'NULL'
+				};
+			}
+			$query = "INSERT INTO `e_{$this->type->getID()}` (".join(',', $insertClause).") VALUE (".join(',', $valueClause).")";
+			$mysqli->query($query);
+			$this->id = (int) $mysqli->insert_id;
+		} else {
+			$setClause = [];
+			foreach ($this->properties as $propName => $propValue) {
+				$setClause[] = "`{$propName}` = ".match (gettype($propValue)) {
+					'boolean', 'integer', 'double' => +$propValue,
+					default => $propValue ? '\''.app()->db()->escape($propValue).'\'' : 'NULL'
+				};
+			}
+			$query = "UPDATE `e_{$this->type->getID()}` SET ".join(', ', $setClause)." WHERE `id` = '{$this->id}'";
+			$mysqli->query($query);
+		}
 	}
 
 	/**

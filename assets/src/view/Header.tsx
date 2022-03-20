@@ -25,13 +25,7 @@ export default function Header(): JSX.Element {
 				method: "POST",
 				body: reader.result
 			})
-			.then(r => {
-				setImportResponse(r);
-				return r.json();
-			})
-			.then(data => {
-				setImportData(data);
-			});
+			.then(() => location.reload());
 		}
 		reader.readAsText(file);
 	}

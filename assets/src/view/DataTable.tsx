@@ -69,7 +69,7 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 												<tr key={prop.name}>
 													<td>{prop.name}</td>
 													<td>
-														<Form.Control placeholder={prop.name} name={prop.name}/>
+														<Form.Control type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
 													</td>
 												</tr>
 											))}

@@ -24,32 +24,38 @@ export default function Type(): JSX.Element {
 							<Fetch input={`/api/type/${params.typeID}/`}>
 								{(typeResponse, typeData) => (
 									typeResponse.ok ? (
-										<>
-											<h1>{typeData.name}</h1>
-											<Tabs defaultActiveKey="items">
-												<Tab eventKey="items" title="Данные">
-													<Fetch input={`/api/type/${params.typeID}/entities/`}>
-														{(entitiesResponse, entitiesData) => (
-															<DataTable crudUrl={`/api/type/${params.typeID}/`} propsUrl={`/api/type/${params.typeID}/props/`} data={entitiesData} actions={["create", "delete", "edit"]}/>
+										<Fetch input={`/api/type/${params.typeID}/entities/`}>
+											{(entitiesResponse, entitiesData) => (
+												<>
+													<h1>{typeData.name}</h1>
+													<Tabs defaultActiveKey="items">
+														{!!entitiesData.length && (
+															<Tab eventKey="items" title="Данные">
+																<DataTable crudUrl={`/api/type/${params.typeID}/`} propsUrl={`/api/type/${params.typeID}/props/`} data={entitiesData} actions={["create", "delete", "edit"]}/>
+															</Tab>
 														)}
-													</Fetch>
-												</Tab>
-												<Tab eventKey="itemProperties" title="Свойства записей">
-													<Fetch input={`/api/type/${params.typeID}/props/`}>
-														{(propsResponse, propsData) => (
-															<DataTable propsUrl="" data={propsData} actions={["create", "delete", "edit"]}/>
+														{!!entitiesData.length && (
+															<Tab eventKey="itemProperties" title="Свойства записей">
+																<Fetch input={`/api/type/${params.typeID}/props/`}>
+																	{(propsResponse, propsData) => (
+																		<DataTable propsUrl="" data={propsData} actions={["create", "delete", "edit"]}/>
+																	)}
+																</Fetch>
+															</Tab>
 														)}
-													</Fetch>
-												</Tab>
-												<Tab eventKey="typeProperties" title="Свойства типа">
-													<DataTable propsUrl="" data={typeData.properties ? Object.entries(typeData.properties).map((entry: any) => ({
-														name: entry[0],
-														value: entry[1]
-													})) : []} actions={["create", "delete"]}/>
-												</Tab>
-												<Tab eventKey="settings" title="Настройки"></Tab>
-											</Tabs>
-										</>
+														{!entitiesData.length && (
+															<Tab eventKey="typeProperties" title="Свойства типа">
+																<DataTable propsUrl="" data={typeData.properties ? Object.entries(typeData.properties).map((entry: any) => ({
+																	name: entry[0],
+																	value: entry[1]
+																})) : []} actions={["create", "delete"]}/>
+															</Tab>
+														)}
+														<Tab eventKey="settings" title="Настройки"></Tab>
+													</Tabs>
+												</>
+											)}
+										</Fetch>
 									) : (
 										<h2>{typeData.error.message}</h2>
 									)

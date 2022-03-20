@@ -1,6 +1,5 @@
 import React from "react";
 import {Table, Button, Modal, Form} from "react-bootstrap";
-import Foreach from "view/flow/Foreach";
 import Fetch from "view/Fetch";
 import EntityRow from "view/EntityRow";
 
@@ -67,7 +66,7 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 												</td>
 											</tr>
 											{data.map((prop: any) => (
-												<tr>
+												<tr key={prop.name}>
 													<td>{prop.name}</td>
 													<td>
 														<Form.Control placeholder={prop.name} name={prop.name}/>
@@ -99,7 +98,7 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 				</thead>
 				<tbody>
 					{props.data.map(item => (
-						<EntityRow crudUrl={props.crudUrl!!} id={item.id} props={item} columns={columnsNames}/>
+						<EntityRow key={item.id} crudUrl={props.crudUrl!!} id={item.id} props={item} columns={columnsNames}/>
 					))}
 				</tbody>
 				{props.actions?.includes("create") && (

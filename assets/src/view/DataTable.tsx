@@ -30,7 +30,10 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 				fetch(props.crudUrl!!, {
 					method: "POST",
 					body: JSON.stringify(data)
-				}).then(() => onModalCloseClick());
+				}).then(() => {
+					onModalCloseClick();
+					location.reload();
+				});
 				break;
 			// TODO
 			case Action.Read:

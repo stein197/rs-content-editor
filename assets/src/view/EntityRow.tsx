@@ -40,8 +40,8 @@ export default function EntityRow(props: EntityRowProps) {
 					if (response.ok) {
 						setEProps(result);
 					}
+					onModalCloseClick();
 				})
-				console.log(result);
 			}
 		}
 	};

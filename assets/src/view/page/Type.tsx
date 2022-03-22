@@ -45,9 +45,27 @@ export default function Type(): JSX.Element {
 														)}
 														{!entitiesData.length && (
 															<Tab eventKey="typeProperties" title="Свойства типа">
-																<DataTable propsUrl="" data={typeData.properties ? Object.entries(typeData.properties).map((entry: any) => ({
+																<DataTable propsUrl="" props={[
+																	{
+																		name: "name",
+																		type: "string"
+																	},
+																	{
+																		name: "value",
+																		type: "string",
+																	},
+																	{
+																		name: "type",
+																		type: [
+																			"boolean",
+																			"number",
+																			"string"
+																		]
+																	}
+																]} data={typeData.properties ? Object.entries(typeData.properties).map((entry: any) => ({
 																	name: entry[0],
-																	value: entry[1]
+																	value: entry[1],
+																	type: typeof entry[1]
 																})) : []} actions={["create", "delete"]}/>
 															</Tab>
 														)}

@@ -8,7 +8,7 @@ import URL from "API/URL";
 
 export default function Users(): JSX.Element {
 	return (
-		<Fetch input={URL.User}>
+		<Fetch input="/api/users/current/">
 			{(response, data) => (
 				data.admin > 0 ? (
 					<>
@@ -20,7 +20,20 @@ export default function Users(): JSX.Element {
 								<Card.Body>
 									<Fetch input={URL.Users}>
 										{(response, data) => (
-											<DataTable propsUrl="" data={data} actions={["create", "delete"]}/>
+											<DataTable props={[
+												{
+													name: "name",
+													type: "string"
+												},
+												{
+													name: "password",
+													type: "string"
+												},
+												{
+													name: "admin",
+													type: "boolean"
+												}
+											]} propsUrl="" crudUrl="/api/users/" data={data} actions={["create", "delete"]}/>
 										)}
 									</Fetch>
 								</Card.Body>

@@ -57,7 +57,7 @@ export default function Header(): JSX.Element {
 					<Button variant="danger" onClick={onModalCloseClick}>Закрыть</Button>
 				</Modal.Footer>
 			</Modal>
-			<Fetch input={URL.User}>
+			<Fetch input="/api/users/current/">
 				{React.useCallback((response, data) => (
 					<header>
 						<Card>

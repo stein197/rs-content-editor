@@ -57,30 +57,55 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 					{modalAction === Action.Delete ? (
 						<p>Вы уверены что хотите удалить сущность</p>
 					) : (
-						<Fetch input={props.propsUrl}>
-							{(response, data) => (
-								<Form>
-									<Table>
-										<tbody className="edit">
-											<tr>
-												<td>id</td>
+						props.props ? (
+							<Form>
+								<Table>
+									<tbody className="edit">
+										{props.props.map((prop: any) => (
+											<tr key={prop.name}>
+												<td>{prop.name}</td>
 												<td>
-													<Form.Control placeholder="id" name="id"/>
+													{Array.isArray(prop.type) ? (
+														<select className="form-select" name={prop.name}>
+															{prop.type.map(opt => (
+																<option value={opt}>{opt}</option>
+															))}
+														</select>
+													) : (
+														<Form.Control type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
+													)}
 												</td>
 											</tr>
-											{data.map((prop: any) => (
-												<tr key={prop.name}>
-													<td>{prop.name}</td>
+										))}
+									</tbody>
+								</Table>
+							</Form>
+						) : (
+							<Fetch input={props.propsUrl}>
+								{(response, data) => (
+									<Form>
+										<Table>
+											<tbody className="edit">
+												<tr>
+													<td>id</td>
 													<td>
-														<Form.Control type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
+														<Form.Control placeholder="id" name="id"/>
 													</td>
 												</tr>
-											))}
-										</tbody>
-									</Table>
-								</Form>
-							)}
-						</Fetch>
+												{data.map((prop: any) => (
+													<tr key={prop.name}>
+														<td>{prop.name}</td>
+														<td>
+															<Form.Control type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
+														</td>
+													</tr>
+												))}
+											</tbody>
+										</Table>
+									</Form>
+								)}
+							</Fetch>
+						)
 					)}
 				</Modal.Body>
 				<Modal.Footer>
@@ -88,32 +113,34 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 					<Button variant="danger" onClick={onModalCloseClick}>Отмена</Button>
 				</Modal.Footer>
 			</Modal>
-			<Table striped bordered hover className="m-0">
-				<thead>
-					<tr>
-						{columnsNames.map(item => (
-							<th key={typeof item === "object" ? JSON.stringify(item) : item}>{typeof item === "object" ? JSON.stringify(item) : item}</th>
-						))}
-						{hasColumnActions && (
-							<th>Действия</th>
-						)}
-					</tr>
-				</thead>
-				<tbody>
-					{props.data.map(item => (
-						<EntityRow key={item.id} crudUrl={props.crudUrl!!} id={item.id} props={item} columns={columnsNames}/>
-					))}
-				</tbody>
-				{props.actions?.includes("create") && (
-					<tfoot>
+			<div style={{overflow: "auto"}}>
+				<Table striped bordered hover className="m-0">
+					<thead>
 						<tr>
-							<td colSpan={columnsNames.length + +hasColumnActions}>
-								<button type="button" className="w-100 btn btn-primary" onClick={onCreateClick}>Создать</button>
-							</td>
+							{columnsNames.map(item => (
+								<th key={typeof item === "object" ? JSON.stringify(item) : item}>{typeof item === "object" ? JSON.stringify(item) : item}</th>
+							))}
+							{hasColumnActions && (
+								<th>Действия</th>
+							)}
 						</tr>
-					</tfoot>
-				)}
-			</Table>
+					</thead>
+					<tbody>
+						{props.data.map(item => (
+							<EntityRow key={item.id} crudUrl={props.crudUrl!!} id={item.id} props={item} columns={columnsNames}/>
+						))}
+					</tbody>
+					{props.actions?.includes("create") && (
+						<tfoot>
+							<tr>
+								<td colSpan={columnsNames.length + +hasColumnActions}>
+									<button type="button" className="w-100 btn btn-primary" onClick={onCreateClick}>Создать</button>
+								</td>
+							</tr>
+						</tfoot>
+					)}
+				</Table>
+			</div>
 		</>
 	);
 }
@@ -150,5 +177,9 @@ type DataTableProps = {
 	data: any[];
 	actions?: ("delete" | "create" | "edit")[];
 	propsUrl: string;
+	props?: {
+		name: string;
+		type: string | string[];
+	}[];
 	crudUrl?: string;
 }

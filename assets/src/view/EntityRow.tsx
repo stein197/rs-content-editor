@@ -31,7 +31,17 @@ export default function EntityRow(props: EntityRowProps) {
 			if (ggRef) {
 				const result: any = {};
 				for (const tr of Array.from(ggRef.querySelector("tbody").children)) {
-					result[(tr as any).querySelector("input")!.getAttribute("name")!.toString()] = (tr as any).querySelector("input")!.value;
+					const input = (tr as HTMLElement).querySelector("input")!!;
+					const inputType = input.getAttribute("type");
+					result[input.getAttribute("name")!.toString()] = !inputType || inputType === "text" ? (
+						input!.value
+					) : inputType === "number" ? (
+						+input!.value
+					) : inputType === "checkbox" ? (
+						input.checked
+					) : (
+						input!.value
+					);
 				}
 				fetch(props.crudUrl + `${props.id}/`, {
 					method: "PUT",
@@ -64,7 +74,11 @@ export default function EntityRow(props: EntityRowProps) {
 										<tr key={prop[0]}>
 											<td>{prop[0]}</td>
 											<td>
-												<Form.Control placeholder={prop[0]} name={prop[0]} defaultValue={typeof prop[1] === "object" ? JSON.stringify(prop[1]) : prop[1]}/>
+												{typeof prop[1] === "boolean" ? (
+													<input className="form-check-label" type="checkbox" defaultChecked={prop[1]} name={prop[0]}/>
+												) : (
+													<Form.Control type={typeof prop[1] === "number" ? "number" : "text"} disabled={prop[0] === "id"} placeholder={prop[0]} name={prop[0]} defaultValue={prop[1] == null ? "" : typeof prop[1] === "object" ? JSON.stringify(prop[1]) : prop[1]}/>
+												)}
 											</td>
 										</tr>
 									))}
@@ -80,7 +94,17 @@ export default function EntityRow(props: EntityRowProps) {
 			</Modal>
 			<tr>
 				{props.columns.map(col => (
-					<td key={col}>{typeof eProps[col] === "object" ? JSON.stringify(eProps[col]) : eProps[col]}</td>
+					<td key={col}>
+						{eProps[col] == null ? (
+							""
+						) : typeof eProps[col] === "object" ? (
+							JSON.stringify(eProps[col])
+						) : typeof eProps[col] === "boolean" ? (
+							<input className="form-check-label" type="checkbox" defaultChecked={eProps[col]} disabled/>
+						) : (
+							eProps[col]
+						)}
+					</td>
 				))}
 				<td key="edit">
 					<a href="" onClick={onDelete}>Delete</a>

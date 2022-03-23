@@ -72,7 +72,7 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 															))}
 														</select>
 													) : (
-														<Form.Control type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
+														<Form.Control disabled={prop.name === "id"} type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
 													)}
 												</td>
 											</tr>
@@ -96,7 +96,11 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 													<tr key={prop.name}>
 														<td>{prop.name}</td>
 														<td>
-															<Form.Control type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
+															{prop.type === "boolean" ? (
+																<input className="form-check-label" name={prop.name} type="checkbox"/>
+															) : (
+																<Form.Control disabled={prop.name === "id"} type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
+															)}
 														</td>
 													</tr>
 												))}
@@ -161,7 +165,17 @@ function getActionNameByEnum(action: Action): string {
 function getModalData(): object {
 	const result: any = {};
 	for (const tr of Array.from(document.body.querySelector(".modal-dialog tbody.edit")!.children)) {
-		result[tr.querySelector("input")!.getAttribute("name")!.toString()] = tr.querySelector("input")!.value;
+		const input = (tr as HTMLElement).querySelector("input")!!;
+		const inputType = input.getAttribute("type");
+		result[input.getAttribute("name")!.toString()] = !inputType || inputType === "text" ? (
+			input!.value
+		) : inputType === "number" ? (
+			+input!.value
+		) : inputType === "checkbox" ? (
+			input.checked
+		) : (
+			input!.value
+		);
 	}
 	return result;
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import {Container, Row, Col, Tabs, Tab} from "react-bootstrap";
+import {Container, Row, Col, Tabs, Tab, Table} from "react-bootstrap";
 import Header from "view/Header";
 import Sidebar from "view/Sidebar";
 import Content from "view/Content";
@@ -69,7 +69,44 @@ export default function Type(): JSX.Element {
 																})) : []} actions={["create", "delete"]}/>
 															</Tab>
 														)}
-														<Tab eventKey="settings" title="Настройки"></Tab>
+														<Tab eventKey="settings" title="Настройки">
+															<Fetch input={`/api/type/${params.typeID}/`}>
+																{(typeResponse, typeData) => (
+																	<Table>
+																		<tbody>
+																			<tr>
+																				<td>Есть id</td>
+																				<td>
+																					<input className="form-check-input" type="checkbox" defaultChecked={typeData.hasID} disabled={true}/>
+																				</td>
+																			</tr>
+																			<tr>
+																				<td>Инкремент с</td>
+																				<td>{typeData.incrementFrom}</td>
+																			</tr>
+																			<tr>
+																				<td>Родитель</td>
+																				{typeData.parent ? (
+																					<Fetch input={`/api/type/${typeData.parent}/`}>
+																						{(parentResponse, parentData) => (
+																							<td>{parentData.name}</td>
+																						)}
+																					</Fetch>
+																				) : (
+																					<td>Нет</td>
+																				)}
+																			</tr>
+																			<tr>
+																				<td>Хранить в родителе</td>
+																				<td>
+																					<input className="form-check-input" type="checkbox" defaultChecked={typeData.storeInParent} disabled={true}/>
+																				</td>
+																			</tr>
+																		</tbody>
+																	</Table>
+																)}
+															</Fetch>
+														</Tab>
 													</Tabs>
 												</>
 											)}

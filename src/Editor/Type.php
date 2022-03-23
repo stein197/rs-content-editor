@@ -68,6 +68,8 @@ final class Type {
 	}
 
 	public function getParent(): ?self {
+		if ($this->parent)
+			return $this->parent;
 		return $this->parentID === null ? null : $this->parent = self::get($this->parentID);
 	}
 
@@ -206,7 +208,7 @@ final class Type {
 		$result = new self($data->name);
 		$result->id = $data->id;
 		$result->properties = json_decode($data->properties, false, 512, JSON_UNESCAPED_UNICODE);
-		$result->parentID = (int) $result->parent;
+		$result->parentID = (int) $data->parent;
 		$result->fetchProps();
 		return $result;
 	}

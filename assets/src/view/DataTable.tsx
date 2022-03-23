@@ -67,7 +67,7 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 												<td>
 													{Array.isArray(prop.type) ? (
 														<select className="form-select" name={prop.name}>
-															{prop.type.map(opt => (
+															{prop.type.map((opt: any) => (
 																<option value={opt}>{opt}</option>
 															))}
 														</select>

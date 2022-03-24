@@ -81,6 +81,12 @@ final class Type {
 		$this->props[] = $prop;
 	}
 
+	public function deleteProp(Prop $prop): void {
+		app()->db()->mysqli()->query("ALTER TABLE `e_{$this->id}` DROP COLUMN `{$prop->getName()}`");
+		app()->db()->mysqli()->query("DELETE FROM `entity_types_props` WHERE `property_id` = {$prop->getID()}");
+		$prop->delete();
+	}
+
 	public function hasProp(Prop $prop): bool {
 		if ($prop->getID() === null || $this->id === null)
 			return false;
@@ -102,6 +108,13 @@ final class Type {
 	public function getPropByName(string $name): ?Prop {
 		foreach ($this->props as $prop)
 			if ($prop->getName() === $name)
+				return $prop;
+		return null;
+	}
+
+	public function getPropByID(int $id): ?Prop {
+		foreach ($this->props as $prop)
+			if ($prop->getID() === $id)
 				return $prop;
 		return null;
 	}

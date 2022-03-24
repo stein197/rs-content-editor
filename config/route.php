@@ -44,7 +44,10 @@ return function (Builder $b) {
 						$b->post('/', EntityCRUD::class);
 						$b->match(['GET', 'PUT', 'DELETE'], '/{entityID:\d+}/', EntityCRUD::class);
 						$b->get('/entities/', TypeEntities::class);
-						$b->get('/props/', TypeProps::class);
+						$b->group('/props/', function (Builder $b): void {
+							$b->match(['GET', 'POST'], '/', TypeProps::class);
+							$b->match(['PUT', 'DELETE'], '/{propID:\d+}/', TypeProps::class);
+						});
 						$b->group('/properties/', function (Builder $b): void {
 							$b->post('/', TypePropertiesCRUD::class);
 							$b->match(['GET', 'PUT', 'DELETE'], '/{name}/', TypePropertiesCRUD::class);

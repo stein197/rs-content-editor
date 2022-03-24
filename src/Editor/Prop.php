@@ -14,10 +14,11 @@ final class Prop {
 	public const TYPE_JSON = 3;
 	public const TYPE_DATE = 4;
 	public const TYPE_FILE = 5;
+	public const TYPE_ENTITY = 6;
 
 	private ?int $id = null;
 
-	public function __construct(private string $name, private int $type = self::TYPE_STRING, private bool $required = false) {}
+	public function __construct(private string $name, private int $type = self::TYPE_STRING, private bool $required = false, private ?string $format = null) {}
 
 	public function setName(string $name): void {
 		$this->name = $name;
@@ -31,6 +32,10 @@ final class Prop {
 		$this->required = $required;
 	}
 
+	public function setFormat(?string $format): void {
+		$this->format = $format;
+	}
+	
 	public function getID(): ?int {
 		return $this->id;
 	}
@@ -55,6 +60,8 @@ final class Prop {
 			self::TYPE_JSON => 'json',
 			self::TYPE_DATE => 'date',
 			self::TYPE_FILE => 'file',
+			self::TYPE_ENTITY => 'entity',
+			default => 'string'
 		};
 	}
 
@@ -65,7 +72,9 @@ final class Prop {
 			self::TYPE_STRING => 'TEXT',
 			self::TYPE_JSON => 'JSON',
 			self::TYPE_DATE => 'DATE',
-			self::TYPE_FILE => 'TINYTEXT'
+			self::TYPE_FILE => 'TINYTEXT',
+			self::TYPE_ENTITY => 'INT',
+			default => 'TEXT'
 		};
 	}
 
@@ -79,6 +88,10 @@ final class Prop {
 
 	public function getRequiredAsSQL(): string {
 		return $this->required ? 'NOT NULL' : 'NULL DEFAULT NULL';
+	}
+
+	public function getFormat(): ?string {
+		return $this->format;
 	}
 
 	public function save(): void {
@@ -98,6 +111,11 @@ final class Prop {
 		}
 	}
 
+	public function delete(): void {
+		app()->db()->mysqli()->query("DELETE FROM `entity_props` WHERE `id` = {$this->id}");
+		$this->id = null;
+	}
+
 	public static function getByID(int $id): ?self {
 		$result = app()->db()->mysqli()->query("SELECT * FROM `entity_props` WHERE `id` = ${id}");
 		$data = $result->fetch_object();
@@ -107,12 +125,12 @@ final class Prop {
 
 	private static function fromRecord(stdClass | array $data): self {
 		$data = $data instanceof stdClass ? $data : array2object($data);
-		$result = new self($data->name, self::sqlType2Const($data->type), !!+$data->required);
+		$result = new self($data->name, self::stringType2Const($data->type), !!+$data->required, $data->format ?: null);
 		$result->id = $data->id;
 		return $result;
 	}
 
-	private static function sqlType2Const(string $type): int {
+	public static function stringType2Const(string $type): int {
 		return match($type) {
 			'boolean' => self::TYPE_BOOLEAN,
 			'number' => self::TYPE_NUMBER,
@@ -120,6 +138,7 @@ final class Prop {
 			'json' => self::TYPE_JSON,
 			'date' => self::TYPE_DATE,
 			'file' => self::TYPE_FILE,
+			'entity' => self::TYPE_ENTITY,
 			default => self::TYPE_STRING
 		};
 	}

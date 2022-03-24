@@ -71,6 +71,8 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 																<option value={opt}>{opt}</option>
 															))}
 														</select>
+													) : prop.type === "boolean" ? (
+														<input className="form-check-label" name={prop.name} type="checkbox"/>
 													) : (
 														<Form.Control disabled={prop.name === "id"} type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
 													)}

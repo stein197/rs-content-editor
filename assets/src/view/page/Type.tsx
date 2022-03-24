@@ -38,7 +38,32 @@ export default function Type(): JSX.Element {
 															<Tab eventKey="itemProperties" title="Свойства записей">
 																<Fetch input={`/api/type/${params.typeID}/props/`}>
 																	{(propsResponse, propsData) => (
-																		<DataTable propsUrl="" data={propsData} actions={["create", "delete", "edit"]}/>
+																		<DataTable props={[
+																			{
+																				name: "name",
+																				type: "string"
+																			},
+																			{
+																				name: "type",
+																				type: [
+																					"boolean",
+																					"number",
+																					"string",
+																					"json",
+																					"date",
+																					"file",
+																					"entity"
+																				]
+																			},
+																			{
+																				name: "required",
+																				type: "boolean"
+																			},
+																			{
+																				name: "format",
+																				type: "string"
+																			}
+																		]} propsUrl="" crudUrl={`/api/type/${params.typeID}/props/`} data={propsData} actions={["create", "delete", "edit"]}/>
 																	)}
 																</Fetch>
 															</Tab>

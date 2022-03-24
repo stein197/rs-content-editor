@@ -51,13 +51,13 @@ export default function Sidebar(): JSX.Element {
 								<tr>
 									<td>Имя</td>
 									<td>
-										<input type="text" name="name"/>
+										<input type="text" className="form-control" name="name"/>
 									</td>
 								</tr>
 								<tr>
 									<td>Родитель</td>
 									<td>
-										<select name="parent">
+										<select name="parent" className="form-select">
 											<AllTypesList>
 												{(id, name, depth) => (
 													<option value={id}>{"-".repeat(depth) + name}</option>
@@ -69,13 +69,13 @@ export default function Sidebar(): JSX.Element {
 								<tr>
 									<td>Хранить в родителе</td>
 									<td>
-										<input type="checkbox" name="store_in_parent"/>
+										<input type="checkbox" className="form-check-input" name="store_in_parent"/>
 									</td>
 								</tr>
 								<tr>
 									<td>Инкремент с</td>
 									<td>
-										<input type="number" name="increment_from"/>
+										<input type="number" className="form-control" name="increment_from"/>
 									</td>
 								</tr>
 							</tbody>

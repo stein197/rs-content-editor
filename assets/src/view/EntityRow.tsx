@@ -102,9 +102,12 @@ export default function EntityRow(props: EntityRowProps) {
 												) : props.propTypes?.find(p => p.name === prop[0])?.type === "file" ? (
 													<div>
 														<img src={(() => {
+															if (!prop[1])
+																return "";
 															const format: string | null = props.propTypes.find(p => p.name === prop[0]).format;
-															const dir = format ? format.split(";")[0] : "/media/";
-															return `${dir}/${prop[1]}`;
+															const [dir, , displayFormat] = format ? format.split(";") : ["/media/", "", "{name}.{ext}"];
+															const [fileName, fileExt] = prop[1].split(".");
+															return `${dir}/${displayFormat.replace("{name}", fileName).replace("{ext}", fileExt)}`;
 														})()}/>
 														<input className="custom-file-input" type="file" name={prop[0]} onChange={onFileInputChange}/>
 													</div>
@@ -134,11 +137,14 @@ export default function EntityRow(props: EntityRowProps) {
 						) : typeof eProps[col] === "boolean" ? (
 							<input className="form-check-label" type="checkbox" defaultChecked={eProps[col]} disabled/>
 						) : props.propTypes?.find(p => p.name === col)?.type === "file" ? (
-							(() => {
+							<img src={(() => {
+								if (!eProps[col])
+									return "";
 								const format: string | null = props.propTypes.find(p => p.name === col).format;
-								const dir = format ? format.split(";")[0] : "/media/";
-								return <img src={`${dir}/${eProps[col]}`}/>
-							})()
+								const [dir, , displayFormat] = format ? format.split(";") : ["/media/", "", "{name}.{ext}"];
+								const [fileName, fileExt] = eProps[col].split(".");
+								return `${dir}/${displayFormat.replace("{name}", fileName).replace("{ext}", fileExt)}`;
+							})()}/>
 						) : (
 							eProps[col]
 						)}

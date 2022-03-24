@@ -69,11 +69,11 @@ final class Entity {
 				$insertClause[] = "`{$propName}`";
 				$valueClause[] = match (gettype($propValue)) {
 					'boolean', 'integer', 'double' => +$propValue,
-					'array' => '\''.app()->db()->escape($propValue['name']).'\'',
+					'array' => '\''.app()->db()->escape(self::formatFileName($prop->getFormat() ?? '', $propValue['name'])).'\'',
 					default => $propValue ? '\''.app()->db()->escape($propValue).'\'' : 'NULL'
 				};
 				if ($prop->getType() === Prop::TYPE_FILE)
-					$this->saveFile($prop->getFormat() ? explode(';', $prop->getFormat())[0] : '/media', $propValue);
+					$this->saveFile($prop->getFormat(), $propValue);
 			}
 			$query = "INSERT INTO `e_{$this->type->getID()}` (".join(',', $insertClause).") VALUE (".join(',', $valueClause).")";
 			$mysqli->query($query);
@@ -84,22 +84,38 @@ final class Entity {
 				$prop = $this->type->getPropByName($propName);
 				$setClause[] = "`{$propName}` = ".match (gettype($propValue)) {
 					'boolean', 'integer', 'double' => +$propValue,
-					'array' => '\''.app()->db()->escape($propValue['name']).'\'',
+					'array' => '\''.app()->db()->escape(self::formatFileName($prop->getFormat() ?? '', $propValue['name'])).'\'',
 					default => $propValue ? '\''.app()->db()->escape($propValue).'\'' : 'NULL'
 				};
 				if ($prop->getType() === Prop::TYPE_FILE)
-					$this->saveFile($prop->getFormat() ? explode(';', $prop->getFormat())[0] : '/media', $propValue);
+					$this->saveFile($prop->getFormat(), $propValue);
 			}
 			$query = "UPDATE `e_{$this->type->getID()}` SET ".join(', ', $setClause)." WHERE `id` = '{$this->id}'";
 			$mysqli->query($query);
 		}
 	}
 
-	private function saveFile(string $dir, array $file): void {
-		$dir = resolvePath("public/{$dir}");
+	private function saveFile(string $format, array $file): void {
+		$dir = self::parseFormat($format)['dir'];
 		if (!file_exists($dir))
 			mkdir($dir, 0777, true);
 		file_put_contents("{$dir}/{$file['name']}", base64_decode($file['data']));
+	}
+
+	private static function parseFormat(string $format): array {
+		[$dir, $storeFormat, $displayFormat] = explode(';', $format);
+		$dir = resolvePath('public/'.($dir ?: '/media'));
+		return [
+			'dir' => $dir,
+			'storeFormat' => $storeFormat ?: '{name}.{ext}',
+			'displayFormat' => $displayFormat ?: '{name}.{ext}'
+		];
+	}
+
+	private static function formatFileName(string $format, string $fileName): string {
+		$displayFormat = self::parseFormat($format)['displayFormat'];
+		[$fileName, $fileExt] = explode('.', $fileName);
+		return str_replace('{ext}', $fileExt, str_replace('{name}', $fileName, $displayFormat));
 	}
 
 	/**

@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS entity_props (
 	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name TINYTEXT NOT NULL,
-	type ENUM('boolean', 'number', 'string', 'json', 'date', 'file') NOT NULL DEFAULT 'string',
+	type ENUM('boolean', 'number', 'string', 'json', 'date', 'file', 'entity') NOT NULL DEFAULT 'string',
 	format TINYTEXT NULL,
 	required TINYINT NOT NULL DEFAULT 0
 ) Engine = InnoDB;
@@ -26,7 +26,5 @@ CREATE TABLE IF NOT EXISTS entity_types (
 CREATE TABLE IF NOT EXISTS entity_types_props (
 	property_id INT UNSIGNED NOT NULL,
 	type_id INT UNSIGNED NOT NULL,
-	-- FOREIGN KEY (property_id) REFERENCES entity_props(id) ON DELETE CASCADE,
-	-- FOREIGN KEY (type_id) REFERENCES entity_types(id) ON DELETE CASCADE,
 	UNIQUE KEY (property_id, type_id)
 ) Engine = InnoDB;

@@ -76,6 +76,8 @@ export default function EntityRow(props: EntityRowProps) {
 											<td>
 												{typeof prop[1] === "boolean" ? (
 													<input className="form-check-label" type="checkbox" defaultChecked={prop[1]} name={prop[0]}/>
+												) : props.propTypes?.find(p => p.name === prop[0])?.type === "date" ? (
+													<input className="form-check-label" type="date" defaultValue={prop[1]} name={prop[0]}/>
 												) : (
 													<Form.Control type={typeof prop[1] === "number" ? "number" : "text"} disabled={prop[0] === "id"} placeholder={prop[0]} name={prop[0]} defaultValue={prop[1] == null ? "" : typeof prop[1] === "object" ? JSON.stringify(prop[1]) : prop[1]}/>
 												)}
@@ -126,5 +128,6 @@ type EntityRowProps = {
 	id: number | string;
 	columns: string[];
 	props: any;
+	propTypes?: any[];
 	crudUrl: string;
 }

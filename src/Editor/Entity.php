@@ -8,11 +8,12 @@ use Exception;
 use DI\Definition\Exception\InvalidDefinition;
 use DI\DependencyException;
 use DI\NotFoundException;
-use mysqli;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use function App\app;
 use function is_numeric;
+use function date_create_from_format;
+use function date;
 use const JSON_UNESCAPED_UNICODE;
 
 // TODO
@@ -37,7 +38,15 @@ final class Entity {
 		unset($this->properties['id']);
 	}
 
-	public function getProperties(): array {
+	public function getProperties(bool $format = false): array {
+		if ($format) {
+			$result = [];
+			foreach ($this->properties as $k => $v) {
+				$prop = $this->type->getPropByName($k);
+				$result[$k] = $v && $prop->getType() === Prop::TYPE_DATE && $prop->getFormat() ? date($prop->getFormat(), date_create_from_format('Y-m-d', $v)->getTimestamp()) : $v;
+			}
+			return $result;
+		}
 		return $this->properties;
 	}
 

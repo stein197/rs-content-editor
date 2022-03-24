@@ -96,7 +96,7 @@ final class Prop {
 
 	public function save(): void {
 		if ($this->id === null) {
-			$query = "INSERT INTO `entity_props` (`name`, `type`, `required`) VALUES ('{$this->getNameEscaped()}', '{$this->getTypeAsString()}', {$this->getRequiredAsInt()})";
+			$query = "INSERT INTO `entity_props` (`name`, `type`, `required`, `format`) VALUES ('{$this->getNameEscaped()}', '{$this->getTypeAsString()}', {$this->getRequiredAsInt()}, ".($this->format ? '\''.app()->db()->escape($this->format).'\'' : 'NULL').")";
 			$mysqli = app()->db()->mysqli();
 			$mysqli->query($query);
 			$this->id = (int) $mysqli->insert_id;
@@ -104,7 +104,8 @@ final class Prop {
 			$querySet = [
 				"`name` = '{$this->getNameEscaped()}'",
 				"`type` = '{$this->getTypeAsString()}'",
-				"`required` = {$this->getRequiredAsInt()}"
+				"`required` = {$this->getRequiredAsInt()}",
+				"`format` = ".($this->format ? '\''.app()->db()->escape($this->format).'\'' : 'NULL')
 			];
 			$query = 'UPDATE `entity_props` SET '.join(', ', $querySet)." WHERE `id` = {$this->id}";
 			app()->db()->mysqli()->query($query);

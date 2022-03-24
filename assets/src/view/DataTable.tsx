@@ -71,8 +71,8 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 																<option value={opt}>{opt}</option>
 															))}
 														</select>
-													) : prop.type === "boolean" ? (
-														<input className="form-check-label" name={prop.name} type="checkbox"/>
+													) : prop.type === "boolean" || prop.type === "date" ? (
+														<input className="form-check-label" name={prop.name} type={prop.type === "boolean" ? "checkbox" : "date"}/>
 													) : (
 														<Form.Control disabled={prop.name === "id"} type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
 													)}
@@ -98,8 +98,8 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 													<tr key={prop.name}>
 														<td>{prop.name}</td>
 														<td>
-															{prop.type === "boolean" ? (
-																<input className="form-check-label" name={prop.name} type="checkbox"/>
+															{prop.type === "boolean" || prop.type === "date" ? (
+																<input className="form-check-label" name={prop.name} type={prop.type === "boolean" ? "checkbox" : "date"}/>
 															) : (
 																<Form.Control disabled={prop.name === "id"} type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
 															)}
@@ -131,11 +131,24 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 							)}
 						</tr>
 					</thead>
-					<tbody>
-						{props.data.map(item => (
-							<EntityRow key={item.id} crudUrl={props.crudUrl!!} id={item.id} props={item} columns={columnsNames}/>
-						))}
-					</tbody>
+					{props.propsUrl ? (
+						<Fetch input={props.propsUrl}>
+							{(propsResponse, propsData) => (
+								<tbody>
+									{props.data.map(item => (
+										<EntityRow key={item.id} propTypes={propsData} crudUrl={props.crudUrl!!} id={item.id} props={item} columns={columnsNames}/>
+									))}
+								</tbody>
+							)}
+						</Fetch>
+					) : (
+						<tbody>
+							{props.data.map(item => (
+								<EntityRow key={item.id} crudUrl={props.crudUrl!!} id={item.id} props={item} columns={columnsNames}/>
+							))}
+						</tbody>
+
+					)}
 					{props.actions?.includes("create") && (
 						<tfoot>
 							<tr>

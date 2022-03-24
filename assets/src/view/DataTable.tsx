@@ -2,6 +2,7 @@ import React from "react";
 import {Table, Button, Modal, Form} from "react-bootstrap";
 import Fetch from "view/Fetch";
 import EntityRow from "view/EntityRow";
+import EntityTypeValue from "view/EntityTypeValue";
 
 // TODO: Replace actions stubs
 export default function DataTable(props: DataTableProps): JSX.Element | null {
@@ -68,7 +69,7 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 													{Array.isArray(prop.type) ? (
 														<select className="form-select" name={prop.name}>
 															{prop.type.map((opt: any) => (
-																<option value={opt}>{opt}</option>
+																<option key={opt} value={opt}>{opt}</option>
 															))}
 														</select>
 													) : prop.type === "boolean" || prop.type === "date" ? (
@@ -88,18 +89,14 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 									<Form>
 										<Table>
 											<tbody className="edit">
-												<tr>
-													<td>id</td>
-													<td>
-														<Form.Control placeholder="id" name="id"/>
-													</td>
-												</tr>
 												{data.map((prop: any) => (
 													<tr key={prop.name}>
 														<td>{prop.name}</td>
 														<td>
 															{prop.type === "boolean" || prop.type === "date" ? (
 																<input className="form-check-label" name={prop.name} type={prop.type === "boolean" ? "checkbox" : "date"}/>
+															) : prop.type === "entity" ? (
+																<EntityTypeValue name={prop.name}/>
 															) : (
 																<Form.Control disabled={prop.name === "id"} type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
 															)}
@@ -193,8 +190,16 @@ function getModalData(): object {
 				input!.value
 			);
 		} else {
-			const select = (tr as HTMLElement).querySelector("select")!!;
-			result[select.getAttribute("name")!.toString()] = select.value;
+			const selectList = (tr as HTMLElement).querySelectorAll("select");
+			for (const select of selectList) {
+				const selectName = select.getAttribute("name")!.toString();
+				if (selectName.match(/\[.+?\]$/)) {
+					const realName = selectName.replace(/\[.+?\]$/, "");
+					result[realName] = result[realName] ? result[realName] + `:${select.value}` : select.value;
+				} else {
+					result[selectName] = select.value;
+				}
+			}
 		}
 	}
 	return result;

@@ -1,5 +1,6 @@
 import React from "react";
 import {Table, Button, Modal, Form} from "react-bootstrap";
+import EntityTypeValue from "view/EntityTypeValue";
 
 export default function EntityRow(props: EntityRowProps) {
 	const [eProps, setEProps] = React.useState<any>(props.props);
@@ -31,17 +32,30 @@ export default function EntityRow(props: EntityRowProps) {
 			if (ggRef) {
 				const result: any = {};
 				for (const tr of Array.from(ggRef.querySelector("tbody").children)) {
-					const input = (tr as HTMLElement).querySelector("input")!!;
-					const inputType = input.getAttribute("type");
-					result[input.getAttribute("name")!.toString()] = !inputType || inputType === "text" ? (
-						input!.value
-					) : inputType === "number" ? (
-						+input!.value
-					) : inputType === "checkbox" ? (
-						input.checked
-					) : (
-						input!.value
-					);
+					const input = (tr as HTMLElement).querySelector("input");
+					if (input) {
+						const inputType = input.getAttribute("type");
+						result[input.getAttribute("name")!.toString()] = !inputType || inputType === "text" ? (
+							input!.value
+						) : inputType === "number" ? (
+							+input!.value
+						) : inputType === "checkbox" ? (
+							input.checked
+						) : (
+							input!.value
+						);
+					} else {
+						const selectList = (tr as HTMLElement).querySelectorAll("select");
+						for (const select of selectList) {
+							const selectName = select.getAttribute("name")!.toString();
+							if (selectName.match(/\[.+?\]$/)) {
+								const realName = selectName.replace(/\[.+?\]$/, "");
+								result[realName] = result[realName] ? result[realName] + `:${select.value}` : select.value;
+							} else {
+								result[selectName] = select.value;
+							}
+						}
+					}
 				}
 				fetch(props.crudUrl + `${props.id}/`, {
 					method: "PUT",
@@ -78,6 +92,8 @@ export default function EntityRow(props: EntityRowProps) {
 													<input className="form-check-label" type="checkbox" defaultChecked={prop[1]} name={prop[0]}/>
 												) : props.propTypes?.find(p => p.name === prop[0])?.type === "date" ? (
 													<input className="form-check-label" type="date" defaultValue={prop[1]} name={prop[0]}/>
+												) : props.propTypes?.find(p => p.name === prop[0])?.type === "entity" ? (
+													<EntityTypeValue name={props.propTypes?.find(p => p.name === prop[0])!.name} value={prop[1]}/>
 												) : (
 													<Form.Control type={typeof prop[1] === "number" ? "number" : "text"} disabled={prop[0] === "id"} placeholder={prop[0]} name={prop[0]} defaultValue={prop[1] == null ? "" : typeof prop[1] === "object" ? JSON.stringify(prop[1]) : prop[1]}/>
 												)}

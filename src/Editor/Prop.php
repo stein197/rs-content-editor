@@ -73,7 +73,7 @@ final class Prop {
 			self::TYPE_JSON => 'JSON',
 			self::TYPE_DATE => 'DATE',
 			self::TYPE_FILE => 'TINYTEXT',
-			self::TYPE_ENTITY => 'INT',
+			self::TYPE_ENTITY => 'TINYTEXT',
 			default => 'TEXT'
 		};
 	}

@@ -14,7 +14,7 @@ export default function Fetch(props: FetchProps): JSX.Element | null {
 }
 
 type FetchProps = {
-	children(response: Response, data: any): JSX.Element;
+	children(response: Response, data: any): JSX.Element | null;
 	input: Parameters<typeof fetch>[0];
 	init?: Parameters<typeof fetch>[1];
 }

@@ -99,3 +99,20 @@ function object2array(stdClass $data): array {
 		$value = $value instanceof stdClass ? object2array($value) : $value;
 	return $result;
 }
+
+function string2bool(string $string): ?bool {
+	$string = strtolower($string);
+	static $data = [
+		'1' => '0',
+		'y' => 'n',
+		'yes' => 'no',
+		'on' => 'off',
+		'true' => 'false',
+		't' => 'f'
+	];
+	if (isset($data[$string]))
+		return true;
+	elseif (in_array($string, $data))
+		return false;
+	return null;
+}

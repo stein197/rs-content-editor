@@ -14,6 +14,7 @@ use App\Controller\Api\TypeCRUD;
 use App\Controller\Api\TypeEntities;
 use App\Controller\Api\EntityCRUD;
 use App\Controller\Api\TypeProps;
+use App\Controller\Api\TypePropertiesCRUD;
 use App\Controller\Import;
 use App\Controller\Export;
 use App\Controller\Install;
@@ -44,6 +45,10 @@ return function (Builder $b) {
 						$b->match(['GET', 'PUT', 'DELETE'], '/{entityID:\d+}/', EntityCRUD::class);
 						$b->get('/entities/', TypeEntities::class);
 						$b->get('/props/', TypeProps::class);
+						$b->group('/properties/', function (Builder $b): void {
+							$b->post('/', TypePropertiesCRUD::class);
+							$b->match(['GET', 'PUT', 'DELETE'], '/{name}/', TypePropertiesCRUD::class);
+						});
 					});
 				});
 			});

@@ -45,7 +45,7 @@ export default function Type(): JSX.Element {
 														)}
 														{!entitiesData.length && (
 															<Tab eventKey="typeProperties" title="Свойства типа">
-																<DataTable propsUrl="" props={[
+																<DataTable crudUrl={`/api/type/${params.typeID}/properties/`} propsUrl="" props={[
 																	{
 																		name: "name",
 																		type: "string"
@@ -63,6 +63,7 @@ export default function Type(): JSX.Element {
 																		]
 																	}
 																]} data={typeData.properties ? Object.entries(typeData.properties).map((entry: any) => ({
+																	id: entry[0],
 																	name: entry[0],
 																	value: entry[1],
 																	type: typeof entry[1]

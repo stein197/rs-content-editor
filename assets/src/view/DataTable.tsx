@@ -165,17 +165,22 @@ function getActionNameByEnum(action: Action): string {
 function getModalData(): object {
 	const result: any = {};
 	for (const tr of Array.from(document.body.querySelector(".modal-dialog tbody.edit")!.children)) {
-		const input = (tr as HTMLElement).querySelector("input")!!;
-		const inputType = input.getAttribute("type");
-		result[input.getAttribute("name")!.toString()] = !inputType || inputType === "text" ? (
-			input!.value
-		) : inputType === "number" ? (
-			+input!.value
-		) : inputType === "checkbox" ? (
-			input.checked
-		) : (
-			input!.value
-		);
+		const input = (tr as HTMLElement).querySelector("input");
+		if (input) {
+			const inputType = input.getAttribute("type");
+			result[input.getAttribute("name")!.toString()] = !inputType || inputType === "text" ? (
+				input!.value
+			) : inputType === "number" ? (
+				+input!.value
+			) : inputType === "checkbox" ? (
+				input.checked
+			) : (
+				input!.value
+			);
+		} else {
+			const select = (tr as HTMLElement).querySelector("select")!!;
+			result[select.getAttribute("name")!.toString()] = select.value;
+		}
 	}
 	return result;
 }

@@ -42,6 +42,10 @@ final class Type {
 		$this->properties->{$name} = $value;
 	}
 
+	public function unsetProperty(string $name): void {
+		unset($this->properties->{$name});
+	}
+
 	public function setParent(self | int $parent): void {
 		if ($parent instanceof self) {
 			$this->parent = $parent;

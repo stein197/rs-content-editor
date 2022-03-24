@@ -22,3 +22,23 @@ body {
 main {
 	flex-grow: 1;
 }
+
+aside {
+	ul {
+		a {
+			width: 100%;
+			display: block;
+
+			&.active {
+				&::after {
+					content: "\1F892";
+					position: absolute;
+					right: 0;
+					font-size: 30px;
+					line-height: 1;
+					top: -4px;
+				}
+			}
+		}
+	}
+}

@@ -3,6 +3,7 @@ import {Table, Button, Modal, Form} from "react-bootstrap";
 import Fetch from "view/Fetch";
 import EntityRow from "view/EntityRow";
 import EntityTypeValue from "view/EntityTypeValue";
+import {onFileInputChange, loadFile} from "Util";
 
 export default function DataTable(props: DataTableProps): JSX.Element | null {
 	const columnsNames = props.data && props.data.length ? Object.keys(props.data[0]) : null;
@@ -19,10 +20,10 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 		setModalAction(Action.Create);
 		setModalVisible(true);
 	}, []);
-	const onModalActionClick = React.useCallback(e => {
+	const onModalActionClick = React.useCallback(async (e) => {
 		switch (modalAction) {
 			case Action.Create:
-				const data = getModalData();
+				const data = await getModalData();
 				fetch(props.crudUrl!!, {
 					method: "POST",
 					body: JSON.stringify(data)
@@ -92,6 +93,11 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 																<input className="form-check-label" name={prop.name} type={prop.type === "boolean" ? "checkbox" : "date"}/>
 															) : prop.type === "entity" ? (
 																<EntityTypeValue name={prop.name}/>
+															) : prop.type === "file" ? (
+																<div>
+																	<img/>
+																	<input className="custom-file-input" type="file" name={prop.name} onChange={onFileInputChange}/>
+																</div>
 															) : (
 																<Form.Control disabled={prop.name === "id"} type={prop.type === "number" ? "number" : "text"} placeholder={prop.name} name={prop.name}/>
 															)}
@@ -165,7 +171,7 @@ function getActionNameByEnum(action: Action): string {
 	}
 }
 
-function getModalData(): object {
+async function getModalData(): Promise<object> {
 	const result: any = {};
 	for (const tr of Array.from(document.body.querySelector(".modal-dialog tbody.edit")!.children)) {
 		const input = (tr as HTMLElement).querySelector("input");
@@ -177,6 +183,11 @@ function getModalData(): object {
 				+input!.value
 			) : inputType === "checkbox" ? (
 				input.checked
+			) : inputType === "file" ? (
+				{
+					name: input.files![0].name,
+					data: btoa((await loadFile(input))!.toString())
+				}
 			) : (
 				input!.value
 			);

@@ -11,9 +11,14 @@ use DI\NotFoundException;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use function App\app;
+use function App\resolvePath;
 use function is_numeric;
 use function date_create_from_format;
 use function date;
+use function file_exists;
+use function mkdir;
+use function file_put_contents;
+use function base64_decode;
 use const JSON_UNESCAPED_UNICODE;
 
 // TODO
@@ -60,11 +65,15 @@ final class Entity {
 			$insertClause = [];
 			$valueClause = [];
 			foreach ($this->properties as $propName => $propValue) {
+				$prop = $this->type->getPropByName($propName);
 				$insertClause[] = "`{$propName}`";
 				$valueClause[] = match (gettype($propValue)) {
 					'boolean', 'integer', 'double' => +$propValue,
+					'array' => '\''.app()->db()->escape($propValue['name']).'\'',
 					default => $propValue ? '\''.app()->db()->escape($propValue).'\'' : 'NULL'
 				};
+				if ($prop->getType() === Prop::TYPE_FILE)
+					$this->saveFile($prop->getFormat() ? explode(';', $prop->getFormat())[0] : '/media', $propValue);
 			}
 			$query = "INSERT INTO `e_{$this->type->getID()}` (".join(',', $insertClause).") VALUE (".join(',', $valueClause).")";
 			$mysqli->query($query);
@@ -72,14 +81,25 @@ final class Entity {
 		} else {
 			$setClause = [];
 			foreach ($this->properties as $propName => $propValue) {
+				$prop = $this->type->getPropByName($propName);
 				$setClause[] = "`{$propName}` = ".match (gettype($propValue)) {
 					'boolean', 'integer', 'double' => +$propValue,
+					'array' => '\''.app()->db()->escape($propValue['name']).'\'',
 					default => $propValue ? '\''.app()->db()->escape($propValue).'\'' : 'NULL'
 				};
+				if ($prop->getType() === Prop::TYPE_FILE)
+					$this->saveFile($prop->getFormat() ? explode(';', $prop->getFormat())[0] : '/media', $propValue);
 			}
 			$query = "UPDATE `e_{$this->type->getID()}` SET ".join(', ', $setClause)." WHERE `id` = '{$this->id}'";
 			$mysqli->query($query);
 		}
+	}
+
+	private function saveFile(string $dir, array $file): void {
+		$dir = resolvePath("public/{$dir}");
+		if (!file_exists($dir))
+			mkdir($dir, 0777, true);
+		file_put_contents("{$dir}/{$file['name']}", base64_decode($file['data']));
 	}
 
 	/**

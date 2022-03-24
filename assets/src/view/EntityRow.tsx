@@ -1,6 +1,7 @@
 import React from "react";
 import {Table, Button, Modal, Form} from "react-bootstrap";
 import EntityTypeValue from "view/EntityTypeValue";
+import {onFileInputChange, loadFile} from "Util";
 
 export default function EntityRow(props: EntityRowProps) {
 	const [eProps, setEProps] = React.useState<any>(props.props);
@@ -17,7 +18,7 @@ export default function EntityRow(props: EntityRowProps) {
 		setAction(Action.Edit);
 		setModalVisible(true);
 	}
-	const onModalActionClick = () => {
+	const onModalActionClick = async () => {
 		if (action === Action.Delete) {
 			fetch(props.crudUrl + `${props.id}/`, {
 				method: "DELETE"
@@ -27,7 +28,6 @@ export default function EntityRow(props: EntityRowProps) {
 					setDeleted(true);
 				}
 			});
-		// TODO
 		} else if (action === Action.Edit) {
 			if (ggRef) {
 				const result: any = {};
@@ -41,6 +41,11 @@ export default function EntityRow(props: EntityRowProps) {
 							+input!.value
 						) : inputType === "checkbox" ? (
 							input.checked
+						) : inputType === "file" ? (
+							{
+								name: input.files![0].name,
+								data: btoa((await loadFile(input))!.toString())
+							}
 						) : (
 							input!.value
 						);
@@ -94,6 +99,15 @@ export default function EntityRow(props: EntityRowProps) {
 													<input className="form-check-label" type="date" defaultValue={prop[1]} name={prop[0]}/>
 												) : props.propTypes?.find(p => p.name === prop[0])?.type === "entity" ? (
 													<EntityTypeValue name={props.propTypes?.find(p => p.name === prop[0])!.name} value={prop[1]}/>
+												) : props.propTypes?.find(p => p.name === prop[0])?.type === "file" ? (
+													<div>
+														<img src={(() => {
+															const format: string | null = props.propTypes.find(p => p.name === prop[0]).format;
+															const dir = format ? format.split(";")[0] : "/media/";
+															return `${dir}/${prop[1]}`;
+														})()}/>
+														<input className="custom-file-input" type="file" name={prop[0]} onChange={onFileInputChange}/>
+													</div>
 												) : (
 													<Form.Control type={typeof prop[1] === "number" ? "number" : "text"} disabled={prop[0] === "id"} placeholder={prop[0]} name={prop[0]} defaultValue={prop[1] == null ? "" : typeof prop[1] === "object" ? JSON.stringify(prop[1]) : prop[1]}/>
 												)}
@@ -119,6 +133,12 @@ export default function EntityRow(props: EntityRowProps) {
 							JSON.stringify(eProps[col])
 						) : typeof eProps[col] === "boolean" ? (
 							<input className="form-check-label" type="checkbox" defaultChecked={eProps[col]} disabled/>
+						) : props.propTypes?.find(p => p.name === col)?.type === "file" ? (
+							(() => {
+								const format: string | null = props.propTypes.find(p => p.name === col).format;
+								const dir = format ? format.split(";")[0] : "/media/";
+								return <img src={`${dir}/${eProps[col]}`}/>
+							})()
 						) : (
 							eProps[col]
 						)}

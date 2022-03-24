@@ -1,5 +1,5 @@
 import React from "react";
-import {Container, Row, Col, Tabs, Tab, Table} from "react-bootstrap";
+import {Container, Row, Col, Tabs, Tab, Table, Modal, Button} from "react-bootstrap";
 import Header from "view/Header";
 import Sidebar from "view/Sidebar";
 import Content from "view/Content";
@@ -9,8 +9,43 @@ import {useParams} from "react-router-dom";
 
 export default function Type(): JSX.Element {
 	const params = useParams();
+	const [modalVisible, setModalVisible] = React.useState(false);
+
+	function onDeleteClick(e: any) {
+		e.preventDefault();
+		setModalVisible(true);
+	}
+
+	function onModalCloseClick() {
+		setModalVisible(false);
+	}
+
+	function onModalActionClick(e: any) {
+		e.preventDefault();
+		fetch(`/api/type/${params.typeID}/`, {
+			method: "DELETE"
+		// @ts-ignore
+		}).then(() => location = "/");
+	}
+
 	return (
 		<>
+			<Modal show={modalVisible} onHide={onModalCloseClick}>
+				<Modal.Header closeButton>
+					<Modal.Title>Удалить</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Fetch input={`/api/type/${params.typeID}/`}>
+						{(typeResponse, typeData) => (
+							<span>{`Удалить ${typeData.name}`}</span>
+						)}
+					</Fetch>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="primary" onClick={onModalActionClick}>Удалить</Button>
+					<Button variant="danger" onClick={onModalCloseClick}>Отмена</Button>
+				</Modal.Footer>
+			</Modal>
 			<Container className="py-1">
 				<Header/>
 			</Container>
@@ -29,12 +64,12 @@ export default function Type(): JSX.Element {
 												<>
 													<h1>{typeData.name}</h1>
 													<Tabs defaultActiveKey="items">
-														{!!entitiesData.length && (
+														{(!!entitiesData.length || (!entitiesData.length && (!typeData.properties || !Object.keys(typeData.properties).length))) && (
 															<Tab eventKey="items" title="Данные">
 																<DataTable crudUrl={`/api/type/${params.typeID}/`} propsUrl={`/api/type/${params.typeID}/props/`} data={entitiesData} actions={["create", "delete", "edit"]}/>
 															</Tab>
 														)}
-														{!!entitiesData.length && (
+														{(!!entitiesData.length || (!entitiesData.length && (!typeData.properties || !Object.keys(typeData.properties).length))) && (
 															<Tab eventKey="itemProperties" title="Свойства записей">
 																<Fetch input={`/api/type/${params.typeID}/props/`}>
 																	{(propsResponse, propsData) => (
@@ -132,6 +167,7 @@ export default function Type(): JSX.Element {
 																	</Table>
 																)}
 															</Fetch>
+															<button type="button" className="w-100 btn btn-primary" onClick={onDeleteClick}>Удалить</button>
 														</Tab>
 													</Tabs>
 												</>

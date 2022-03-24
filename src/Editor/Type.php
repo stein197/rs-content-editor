@@ -26,8 +26,14 @@ final class Type {
 	private array $props = [];
 	private ?self $parent = null;
 	private ?int $parentID = null;
+	private int $storeInParent;
+	private int $incrementFrom;
 
-	public function __construct(private string $name) {}
+	public function __construct(private string $name, ?int $parentID = null, int $storeInParent = 0, int $incrementFrom = 1) {
+		$this->parentID = $parentID;
+		$this->storeInParent = $storeInParent;
+		$this->incrementFrom = $incrementFrom;
+	}
 
 	public function setName(string $name): void {
 		$this->name = $name;
@@ -75,6 +81,14 @@ final class Type {
 		if ($this->parent)
 			return $this->parent;
 		return $this->parentID === null ? null : $this->parent = self::get($this->parentID);
+	}
+
+	public function getIncrementFrom(): int {
+		return $this->incrementFrom;
+	}
+
+	public function getStoreInParent(): int {
+		return $this->storeInParent;
 	}
 
 	public function addProp(Prop $prop): void {
@@ -134,7 +148,7 @@ final class Type {
 			$name = app()->db()->escape($this->name);
 			$properties = json_encode($this->properties, JSON_UNESCAPED_UNICODE);
 			$parent = $this->parentID === null ? 0 : $this->parentID;
-			$query = "INSERT INTO `entity_types` (`name`, `properties`, `parent`) VALUES ('{$name}', '{$properties}', {$parent})";
+			$query = "INSERT INTO `entity_types` (`name`, `properties`, `parent`, `store_in_parent`, `increment_from`) VALUES ('{$name}', '{$properties}', {$parent}, {$this->storeInParent}, {$this->incrementFrom})";
 			$mysqli = app()->db()->mysqli();
 			$mysqli->query($query);
 			$this->id = (int) $mysqli->insert_id;
@@ -183,6 +197,17 @@ final class Type {
 		}
 	}
 
+	public function delete(): void {
+		foreach (self::getByParentID($this->id) as $type)
+			$type->delete();
+		app()->db()->mysqli()->query("TRUNCATE TABLE `e_{$this->id}`");
+		foreach ($this->getProps() as $prop)
+			$this->deleteProp($prop);
+		app()->db()->mysqli()->query("DELETE FROM `entity_types_props` WHERE `type_id` = {$this->id}");
+		app()->db()->mysqli()->query("DELETE FROM `entity_types` WHERE `id` = {$this->id}");
+		$this->id = null;
+	}
+
 	private function fetchProps(): void {
 		if ($this->id === null)
 			return;
@@ -222,7 +247,7 @@ final class Type {
 
 	private static function fromRecord(array | stdClass $data): self {
 		$data = $data instanceof stdClass ? $data : array2object($data);
-		$result = new self($data->name);
+		$result = new self($data->name, null, +$data->store_in_parent, +$data->increment_from);
 		$result->id = $data->id;
 		$result->properties = json_decode($data->properties, false, 512, JSON_UNESCAPED_UNICODE);
 		$result->parentID = (int) $data->parent;

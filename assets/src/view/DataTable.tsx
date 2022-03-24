@@ -4,7 +4,6 @@ import Fetch from "view/Fetch";
 import EntityRow from "view/EntityRow";
 import EntityTypeValue from "view/EntityTypeValue";
 
-// TODO: Replace actions stubs
 export default function DataTable(props: DataTableProps): JSX.Element | null {
 	const columnsNames = props.data && props.data.length ? Object.keys(props.data[0]) : null;
 	const columnActions = props.actions?.filter(action => action !== "create") || [];
@@ -14,18 +13,14 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 
 	const onModalCloseClick = React.useCallback(() => {
 		setModalVisible(false);
-		// clearData();
 	}, []);
-	// TODO
 	const onCreateClick = React.useCallback((e) => {
 		e.preventDefault();
 		setModalAction(Action.Create);
 		setModalVisible(true);
 	}, []);
-	// TODO
 	const onModalActionClick = React.useCallback(e => {
 		switch (modalAction) {
-			// TODO
 			case Action.Create:
 				const data = getModalData();
 				fetch(props.crudUrl!!, {
@@ -48,7 +43,7 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 		}
 	}, []);
 	
-	return columnsNames && (
+	return (
 		<>
 			<Modal show={modalVisible} onHide={onModalCloseClick}>
 				<Modal.Header closeButton>
@@ -120,7 +115,7 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 				<Table striped bordered hover className="m-0">
 					<thead>
 						<tr>
-							{columnsNames.map(item => (
+							{columnsNames?.map(item => (
 								<th key={typeof item === "object" ? JSON.stringify(item) : item}>{typeof item === "object" ? JSON.stringify(item) : item}</th>
 							))}
 							{hasColumnActions && (
@@ -128,34 +123,30 @@ export default function DataTable(props: DataTableProps): JSX.Element | null {
 							)}
 						</tr>
 					</thead>
-					{props.propsUrl ? (
-						<Fetch input={props.propsUrl}>
-							{(propsResponse, propsData) => (
-								<tbody>
-									{props.data.map(item => (
-										<EntityRow key={item.id} propTypes={propsData} crudUrl={props.crudUrl!!} id={item.id} props={item} columns={columnsNames}/>
-									))}
-								</tbody>
-							)}
-						</Fetch>
-					) : (
-						<tbody>
-							{props.data.map(item => (
-								<EntityRow key={item.id} crudUrl={props.crudUrl!!} id={item.id} props={item} columns={columnsNames}/>
-							))}
-						</tbody>
+					{columnsNames && (
+						props.propsUrl ? (
+							<Fetch input={props.propsUrl}>
+								{(propsResponse, propsData) => (
+									<tbody>
+										{props.data.map(item => (
+											<EntityRow key={item.id} propTypes={propsData} crudUrl={props.crudUrl!!} id={item.id} props={item} columns={columnsNames}/>
+										))}
+									</tbody>
+								)}
+							</Fetch>
+						) : (
+							<tbody>
+								{props.data.map(item => (
+									<EntityRow key={item.id} crudUrl={props.crudUrl!!} id={item.id} props={item} columns={columnsNames}/>
+								))}
+							</tbody>
 
-					)}
-					{props.actions?.includes("create") && (
-						<tfoot>
-							<tr>
-								<td colSpan={columnsNames.length + +hasColumnActions}>
-									<button type="button" className="w-100 btn btn-primary" onClick={onCreateClick}>Создать</button>
-								</td>
-							</tr>
-						</tfoot>
+						)
 					)}
 				</Table>
+				{props.actions?.includes("create") && (
+					<button type="button" className="w-100 btn btn-primary" onClick={onCreateClick}>Создать</button>
+				)}
 			</div>
 		</>
 	);

@@ -28,7 +28,7 @@ class Import extends Controller {
 				]
 			]
 		],
-		// TODO: Доделать форматирование по умолчанию для оставшихся, проверить загрузку дат
+		// TODO: Доделать форматирование по умолчанию для оставшихся
 		'stickers' => [
 			'halloween' => [
 				'image' => [
@@ -120,12 +120,12 @@ class Import extends Controller {
 				'start' => [
 					'name' => 'start',
 					'type' => 'date',
-					'format' => 'M-D'
+					'format' => 'm-d'
 				],
 				'finish' => [
 					'name' => 'finish',
 					'type' => 'date',
-					'format' => 'M-D'
+					'format' => 'm-d'
 				]
 			],
 			'winter' => [
@@ -240,12 +240,12 @@ class Import extends Controller {
 					'dateStart' => [
 						'name' => 'dateStart',
 						'type' => 'date',
-						'format' => 'D.M'
+						'format' => 'd.m'
 					],
 					'dateFinish' => [
 						'name' => 'dateFinish',
 						'type' => 'date',
-						'format' => 'D.M'
+						'format' => 'd.m'
 					]
 				]
 			]
@@ -345,13 +345,16 @@ class Import extends Controller {
 		foreach ($entityArray as $entity) {
 			$insertValue = [];
 			foreach ($insertColumns as $colName) {
-				$insertValue[] = match (gettype($entity->{$colName})) {
-					'boolean' => +$entity->{$colName},
-					'integer', 'double', 'float' => $entity->{$colName},
-					'string' => '\''.$this->app->db()->escape($entity->{$colName}).'\'',
-					'array', 'object' => '\''.json_encode($entity->{$colName}, JSON_UNESCAPED_UNICODE).'\'',
-					'NULL' => 'NULL'
-				};
+				if (@$config[$colName]['type'] === 'date' && @$config[$colName]['format'])
+					$insertValue[] = '\''.date('Y-m-d', date_create_from_format($config[$colName]['format'], $entity->{$colName})->getTimestamp()).'\'';
+				else
+					$insertValue[] = match (gettype($entity->{$colName})) {
+						'boolean' => +$entity->{$colName},
+						'integer', 'double', 'float' => $entity->{$colName},
+						'string' => '\''.$this->app->db()->escape($entity->{$colName}).'\'',
+						'array', 'object' => '\''.json_encode($entity->{$colName}, JSON_UNESCAPED_UNICODE).'\'',
+						'NULL' => 'NULL'
+					};
 			}
 			$insertValues[] = $insertValue;
 		}

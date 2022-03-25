@@ -28,90 +28,89 @@ class Import extends Controller {
 				]
 			]
 		],
-		// TODO: Доделать форматирование по умолчанию для оставшихся
 		'stickers' => [
 			'halloween' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/stickers/halloween;{name}'
+					'format' => '/media/stickers/halloween;{name};{name}.png'
 				]
 			],
 			'cats' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/stickers/cats;{name}'
+					'format' => '/media/stickers/cats;{name};{name}.png'
 				]
 			],
 			'owls' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/stickers/cats;{name}'
+					'format' => '/media/stickers/cats;{name};{name}.png'
 				]
 			],
 			'penguins' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/stickers/penguins;{name}'
+					'format' => '/media/stickers/penguins;{name};{name}.png'
 				]
 			],
 			'snowman' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/stickers/snowman;{name}'
+					'format' => '/media/stickers/snowman;{name};{name}.png'
 				]
 			],
 			'leafs' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/stickers/leafs;{name}'
+					'format' => '/media/stickers/leafs;{name};{name}.png'
 				]
 			],
 			'vip' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/stickers/vip;{name}'
+					'format' => '/media/stickers/vip;{name};{name}.png'
 				]
 			],
 			'bottles' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/stickers/bottles;{name}'
+					'format' => '/media/stickers/bottles;{name};{name}.png'
 				]
 			],
 			'snowflakes' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/stickers/snowflakes;{name}'
+					'format' => '/media/stickers/snowflakes;{name};{name}.png'
 				]
 			],
 			'clouds' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/stickers/clouds;{name}'
+					'format' => '/media/stickers/clouds;{name};{name}.png'
 				]
 			],
 			'suns' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/stickers/suns;{name}'
+					'format' => '/media/stickers/suns;{name};{name}.png'
 				]
 			],
 			'hearts' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/stickers/hearts;{name}'
+					'format' => '/media/stickers/hearts;{name};{name}.png'
 				]
 			],
 		],
@@ -132,105 +131,105 @@ class Import extends Controller {
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'spring' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'summer' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'fall' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'new_year' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'valentines' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'november' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'birthday' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'mystic' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'honeymoon' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'sweet_tenderness' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'romantic_evening' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'indomitable_passion' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'holiday_romance' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 			'radiance_luxury' => [
 				'image' => [
 					'name' => 'image',
 					'type' => 'file',
-					'format' => '/media/collections;{name}'
+					'format' => '/media/collections;{name};{name}.png'
 				]
 			],
 		],
@@ -255,38 +254,75 @@ class Import extends Controller {
 				'name' => [
 					'name' => 'name',
 					'type' => 'file',
-					'format' => '/media/wedding/bottles;{name}'
+					'format' => '/media/wedding/bottles;{name};{name}.png'
 				]
 			],
 			'rings' => [
 				'name' => [
 					'name' => 'name',
 					'type' => 'file',
-					'format' => '/media/wedding/rings;{name}'
+					'format' => '/media/wedding/rings;{name};{name}.png'
 				]
 			],
 			'tables' => [
 				'file' => [
 					'name' => 'file',
 					'type' => 'file',
-					'format' => '/media/wedding/tables;{name}'
+					'format' => '/media/wedding/tables;{name};{name}.png'
 				]
 			],
 			'bouquets' => [
 				'name' => [
 					'name' => 'name',
 					'type' => 'file',
-					'format' => '/media/wedding/bouquets;{name}'
+					'format' => '/media/wedding/bouquets;{name};{name}.png'
+				]
+			],
+			'garters' => [
+				'name' => [
+					'type' => 'file',
+					'format' => '/media/wedding/garters;{name};{name}.png'
+				]
+			],
+			'emcees' => [
+				'name' => [
+					'type' => 'file',
+					'format' => '/media/wedding/emcees;{name};{name}.png'
+				]
+			],
+			'brideSuites' => [
+				'name' => [
+					'type' => 'file',
+					'format' => '/media/wedding/brideSuites;{name};{name}.png'
+				]
+			],
+			'groomSuites' => [
+				'name' => [
+					'type' => 'file',
+					'format' => '/media/wedding/groomSuites;{name};{name}.png'
 				]
 			],
 		],
+		'gifts' => [
+			'events' => [
+				'list' => [
+					'dateStart' => [
+						'type' => 'date',
+						'format' => 'd.m'
+					],
+					'dateFinish' => [
+						'type' => 'date',
+						'format' => 'd.m'
+					]
+				]
+			]
+		]
 	];
 
 	public function post(Request $request, Response $response): Response {
 		try {
 			$data = json_decode($request->psr()->getBody()->getContents(), false, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
 			$this->app->db()->truncateData();
-			unset($data->newGifts); // TODO: Временно исключаем
 			$this->app->db()->mysqli()->query('SET sql_mode=\'NO_AUTO_VALUE_ON_ZERO\'');
 			foreach ($data as $typeName => $typeDescriptor)
 				$this->createType($typeName, $typeDescriptor, null, self::CONFIG[$typeName]);
@@ -304,7 +340,7 @@ class Import extends Controller {
 		}
 	}
 
-	private function createType(string $name, stdClass | array $descriptor, ?Type $parent, array $config): void {
+	private function createType(string $name, stdClass | array $descriptor, ?Type $parent, ?array $config): void {
 		$type = new Type($name);
 		if ($parent)
 			$type->setParent($parent);
@@ -345,9 +381,10 @@ class Import extends Controller {
 		foreach ($entityArray as $entity) {
 			$insertValue = [];
 			foreach ($insertColumns as $colName) {
-				if (@$config[$colName]['type'] === 'date' && @$config[$colName]['format'])
-					$insertValue[] = '\''.date('Y-m-d', date_create_from_format($config[$colName]['format'], $entity->{$colName})->getTimestamp()).'\'';
-				else
+				if (@$config[$colName]['type'] === 'date' && @$config[$colName]['format']) {
+					$date = date_create_from_format($config[$colName]['format'], $entity->{$colName});
+					$insertValue[] = $date ? '\''.date('Y-m-d', $date->getTimestamp()).'\'' : 'NULL';
+				} else {
 					$insertValue[] = match (gettype($entity->{$colName})) {
 						'boolean' => +$entity->{$colName},
 						'integer', 'double', 'float' => $entity->{$colName},
@@ -355,6 +392,7 @@ class Import extends Controller {
 						'array', 'object' => '\''.json_encode($entity->{$colName}, JSON_UNESCAPED_UNICODE).'\'',
 						'NULL' => 'NULL'
 					};
+				}
 			}
 			$insertValues[] = $insertValue;
 		}

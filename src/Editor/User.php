@@ -21,7 +21,8 @@ class User {
 		} else {
 			$name = app()->db()->escape($this->properties['name']);
 			$pwHash = password_hash($this->properties['password'], PASSWORD_DEFAULT);
-			app()->db()->mysqli()->query("INSERT INTO `users` (`name`, `password`, `admin`) VALUE ('{$name}', '{$pwHash}', {$this->properties['admin']})");
+			$admin = +$this->properties['admin'];
+			app()->db()->mysqli()->query("INSERT INTO `users` (`name`, `password`, `admin`) VALUE ('{$name}', '{$pwHash}', {$admin})");
 			$this->id = +app()->db()->mysqli()->insert_id;
 		}
 	}

@@ -113,9 +113,9 @@ final class Entity {
 	}
 
 	private static function formatFileName(string $format, string $fileName): string {
-		$displayFormat = self::parseFormat($format)['displayFormat'];
+		$storeFormat = self::parseFormat($format)['storeFormat'];
 		[$fileName, $fileExt] = explode('.', $fileName);
-		return str_replace('{ext}', $fileExt, str_replace('{name}', $fileName, $displayFormat));
+		return str_replace('{ext}', $fileExt, str_replace('{name}', $fileName, $storeFormat));
 	}
 
 	/**
